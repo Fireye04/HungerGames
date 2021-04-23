@@ -1,5 +1,12 @@
 import enum
 import random as r
+
+"""
+Notes for future interactivity update
+for cornucopia allow each player to declare intent (whcih item they're going for, whether theyre staying or not, whether they team, etc)
+"""
+
+
 class stats(enum.Enum):
     STR = ''
     CHA = ''
@@ -42,6 +49,7 @@ class Player(object):
 # remember to put in teams later
 class Team(object):
     pass
+
 cornocopia_items = ['Food', 'Water']
 at_corn = []
 players = []
@@ -57,11 +65,13 @@ def start_game():
         else:
             randItem = r.choice(cornocopia_items)
             if r.choice([True, False]):
+                #Second stay or run
                 if x.get_stat() == 'D':
+
                     is_running.append(x)
                     print(f"{Names[i]} runs into the cornucpoia and grabs {randItem}.")
                 else:
-                    # In cornucopia and staying
+                    # fights over item in cornucopia. 
                     print(f"{Names[i]} runs into the cornucpoia and grabs {randItem}.")
                     at_corn.append(x)
                 x.give_item(randItem)
