@@ -15,7 +15,7 @@ class stats(enum.Enum):
     DEX = ''
     CON = ''
 Names = ["Bob1", "Bob2", "Bob3", "Bob4", "Bob5", "Bob6", "Bob7", "Bob8", "Bob9", "Bob10", "Bob11", "Bob12", "Bob13", "Bob14", "Bob15", "Bob16", "Bob17", "Bob18", "Bob19", "Bob20", "Bob21", "Bob22", "Bob23", "Bob24"]
-s_stats = ["S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"]
+s_stats = ["STR", "DEX", "CON", "INT", "WIS", "CHA","STR", "DEX", "CON", "INT", "WIS", "CHA", "STR", "DEX", "CON", "INT", "WIS", "CHA", "STR", "DEX", "CON", "INT", "WIS", "CHA"]
 class Player(object):
     def __init__(self, name, constant_of_survival, strong_stat, npc):
         self.is_busy = False
@@ -56,28 +56,28 @@ players = []
 is_running = []
 def start_game():
     for i in range(len(Names)):
-        x = Player(Names[i], 1, s_stats[i], False)
-        players.append(x)
+        playerX = Player(Names[i], 1, s_stats[i], False)
+        players.append(playerX)
         if r.choice([True, False]):
             #FIRST STAY OR Run
-            print(f"{Names[i]} ran away.")
-            is_running.append(x)
+            print(f"{Names[i]} runs away into the arena.")
+            is_running.append(playerX)
         else:
             randItem = r.choice(cornocopia_items)
             if r.choice([True, False]):
                 #Second stay or run
-                if x.get_stat() == 'D':
-
-                    is_running.append(x)
-                    print(f"{Names[i]} runs into the cornucpoia and grabs {randItem}.")
+                if playerX.get_stat() == 'DEX':
+                    # if good stat is dex, they get out with an item scot free
+                    is_running.append(playerX)
+                    print(f"{Names[i]} runs into the cornucpoia, randomly grabs {randItem}, and runs into the arena.")
                 else:
                     # fights over item in cornucopia. 
                     print(f"{Names[i]} runs into the cornucpoia and grabs {randItem}.")
-                    at_corn.append(x)
-                x.give_item(randItem)
+                    at_corn.append(playerX)
+                playerX.give_item(randItem)
             else:
                 # In cornucopia and staying
                 print(f'{Names[i]} runs into the cornucopia, grabs {randItem} and stays')
-                x.give_item(randItem)
+                playerX.give_item(randItem)
             
 start_game()
