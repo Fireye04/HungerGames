@@ -25,6 +25,7 @@ class Player(object):
         self.constant_of_survival = constant_of_survival
         self.strong_stat = strong_stat
         self.npc = npc
+        self.is_alive = True
     def get_name(self):
         return self.name
     def get_busy(self):
@@ -51,12 +52,17 @@ class Player(object):
     def give_item(self, item):
       self.item_list.append(item)
       return item
+    def get_alive(self):
+        return self.is_alive
+    def set_alive (self, life):
+        # life should be a bool
+        self.is_alive = life
         
 # remember to put in teams later
 class Team(object):
     pass
 
-cornocopia_items = ['Food', 'Water']
+cornocopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations"]
 at_corn = []
 players = []
 is_running = []
@@ -204,3 +210,9 @@ def start_game():
                     playerX.give_item(randItem)
             
 start_game()
+
+# add a function for each random event
+
+#add a function to clear busy from everyone and call it between random events
+
+# add a function that generates random events on a person by person basis
