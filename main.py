@@ -6,6 +6,7 @@ Notes for future interactivity update
 for cornucopia allow each player to declare intent (whcih item they're going for, whether theyre staying or not, whether they team, etc)
 """
 
+# note to self, when picking an enemy to fight for the cornucopia do not pick an enemy with a WIS stat. 
 
 class stats(enum.Enum):
     STR = 'S'
@@ -62,7 +63,7 @@ class Player(object):
 class Team(object):
     pass
 
-cornocopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations"]
+cornocopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an AWP", "a belt of grenades", "an axe"]
 at_corn = []
 players = []
 is_running = []
@@ -208,8 +209,36 @@ def start_game():
                     print(f'{playerX.get_name()} runs into the cornucopia, grabs {randItem} and stays')
                     at_corn.append(playerX)
                     playerX.give_item(randItem)
+                    # make a list of all the people staying, then run it through a function that lets them battle it out.
             
 start_game()
+
+
+# with every task that deducts survival mod, if it drops below 0 on that task, then that task kills you.
+
+"""random event ideas: 
+if they have a weapon- <name> hunts for food with <weapon> and is/isn't successful,
+<name> hunts down <another tribute> and succeeds/fails at killing them. (run fight)
+
+if they have a bladed weapon (knife, sword, axe)- <name> cuts down a tree and uses the wood for a fire. (+0.25 survival mod)
+
+if they don't have a weapon, but have wisdom- <name> crafts <homemade weapon> with natural resources they found laying around.
+
+if they have dexterity- <name> manages to yoink <enemy tribute>'s <item>
+
+if they don't have wisdom- <name> cuts open a cactus and drinks the juice. They immediately say "Drink cactus juice. I'll quench ya. nothing's quenchier. it's the quenchiest." and become temporarily delusional. -0.25 to survival mod
+
+if they have AWP and dexterity- (2/3rds chance) <name> manages to snipe <enemy tribute> with an AWP. (1/3rd chance) <name> barely misses <enemy tribute> with an AWP. | If they hit, the target dies unless they have constitution, in which case they are heavily injured. -0.5 survival mod.
+
+if they have grenade belt- <name> sets a trap with their grenade belt. roll 1d20. On 16-20: and <enemy tribute> exploded. on 2-15: but nobody fell for it. on 1: but they accidentally set it off. (-0.75 survival mod)
+
+misc- <name> searches for a water source and is/isn't successful (if found +0.25 to survival mod),
+<name> almost falls/falls into a bear trap (if they fall -0.25 to survival mod),
+
+
+
+"""
+
 
 # add a function for each random event
 
