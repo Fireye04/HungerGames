@@ -76,6 +76,7 @@ def game_initialize():
             if r.choice([True, False, False, False]) or player.get_stat() == stats.WIS:
                 print('{name} runs away into the arena to avoid the cornucopia.'.format(name=player.get_name()))
                 is_running.append(player)
+                #Smart Enough to ignore the cornocopia
             else:
                 randItem = r.choice(cornocopia_items)
                 if r.choice([True, False]):
@@ -83,6 +84,7 @@ def game_initialize():
                         is_running.append(player)
                         player.give_item(randItem)
                         print('{name} speeds into the cornucopia, randomly grabs {item}, and quickly runs away'.format(name=player.get_name(), item=randItem))
+                        #gets an item and runs away
                     else:
                         #forced to fight
                         at_corn.append(player)
@@ -90,7 +92,9 @@ def game_initialize():
                     print('{name} runs into the cornucopia, grabs {item} and stays'.format(name=player.get_name(), item=randItem))
                     at_corn.append(player)
                     player.give_item(randItem)
+                    #forced to fight
 def fight(player1:Player, player2:Player):
+    #fight function. It just runs based on d20 rolls
     player1.set_busy(True)
     player2.set_busy(True)
     fight_const_x = gen_fight_const(player1)
@@ -124,23 +128,31 @@ def fight(player1:Player, player2:Player):
         return None
 
 def gen_fight_const(player:Player):
+    #roll with advantage if str
     if player.get_stat() == stats.STR:
         return max(r.randint(0,20), r.randint(0,20))
+    else:
+        return r.randint(0,20)
 
 def corn_fights():
+    #runs corn functions while someone exists
     while at_corn:
         p1 = r.choice(at_corn)
         at_corn.remove(p1)
         p2 = r.choice(at_corn)
         at_corn.remove(p2)
         p_winner = fight(p1, p2)
+        if(len(at_corn==1)):
+            x = at_corn[0]
+            at_corn.remove(x)
+            is_running.append(x)
         if p_winner != None:
             pass
             
 game_initialize()
 for p in at_corn:
     print(p)
-                    # make a list of all the people staying, then run it through a function that lets them battle it out.
+# make a list of all the people staying, then run it through a function that lets them battle it out.
             
 
 
