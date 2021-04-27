@@ -67,6 +67,7 @@ cornocopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of ration
 inner_cornucopia_items = ["an AWP", "a belt of grenades"]
 num_inner_cornucopia_items = 3
 at_corn = []
+by_corn = []
 players = []
 is_running = []
 def game_initialize():
@@ -87,12 +88,12 @@ def game_initialize():
                         #gets an item and runs away
                     else:
                         #forced to fight
-                        at_corn.append(player)
+                        by_corn.append(player)
                 else:
-                    print('{name} runs into the cornucopia, grabs {item} and stays'.format(name=player.get_name(), item=randItem))
                     at_corn.append(player)
-                    player.give_item(randItem)
-                    #forced to fight
+                    #forced to fight in cornucopia
+
+
 def fight(player1:Player, player2:Player):
     #fight function. It just runs based on d20 rolls
     player1.set_busy(True)
@@ -137,7 +138,7 @@ def fight(player1:Player, player2:Player):
         return None
 
 # THIS FUNCTIONS IS FOR FIGHTS OVER AN OBJECT
-def item_corn_fight(player1:Player, player2:Player, item):
+def item_fight(player1:Player, player2:Player, item):
     #fight function. It just runs based on d20 rolls
     player1.set_busy(True)
     player2.set_busy(True)
@@ -146,24 +147,28 @@ def item_corn_fight(player1:Player, player2:Player, item):
     if fight_const_x>fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
+            print(f"{player1.get_name} won a fight with {player2.get_name} over {item}, but spared {player2.get_name}'s life.")
         if player2.get_stat() == stats.CON:
-            player2.set_const(-0.5)
+            player2.set_const(-0.25)
+            print(f"{player1.get_name} won a fight with {player2.get_name} over {item}, but {player2.get_name} managed to survive the attack due to their high constitution.")
         else:
             players.remove(player2)
+            print(f"{player1.get_name} won a fight with {player2.get_name} over {item} and killed {player2.get_name} in the fight")
         #player one wins
         return player1
     if fight_const_y>fight_const_x:
         if player1.get_stat() != stats.CHA:
             player1.set_const(-0.5)
+            print(f"{player2.get_name} won a fight with {player1.get_name} over {item}, but spared {player1.get_name}'s life.")
         if player1.get_stat == stats.CON:
-            player1.set_const(-0.5)
+            player1.set_const(-0.25)
+            print(f"{player2.get_name} won a fight with {player1.get_name} over {item}, but {player1.get_name} managed to survive the attack due to their high constitution.")
         else:
             players.remove(player1)
+            print(f"{player2.get_name} won a fight with {player1.get_name} over {item} and killed {player1.get_name} in the fight")
         #player 2 wins
         return player2
     if fight_const_x==fight_const_y:
-        
-
         if player1.get_stat() == stats.CON:
             player1.set_const(-0.25)
         if player2.get_stat() == stats.CHA:
@@ -196,12 +201,31 @@ def corn_fights():
         p2 = r.choice(at_corn)
         at_corn.remove(p2)
         p_winner = fight(p1, p2)
+        # XD you thought you were fighting? hell naw!
         if(len(at_corn==1)):
             x = at_corn[0]
             at_corn.remove(x)
             is_running.append(x)
         if p_winner != None:
             pass
+
+def corn_fights2():
+    #runs corn functions while someone exists
+    while by_corn:
+        p1 = r.choice(by_corn)
+        by_corn.remove(p1)
+        p2 = r.choice(by_corn)
+        by_corn.remove(p2)
+        p_winner = fight(p1, p2)
+        # XD you thought you were fighting? hell naw!
+        if(len(by_corn==1)):
+            x = by_corn[0]
+            by_corn.remove(x)
+            is_running.append(x)
+        if p_winner != None:
+            pass
+
+
             
 game_initialize()
 for p in at_corn:
