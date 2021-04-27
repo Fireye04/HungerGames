@@ -63,10 +63,12 @@ class Player(object):
 class Team(object):
     pass
 
-cornocopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an AWP", "a belt of grenades", "an axe"]
+cornocopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an axe"]
+inner_cornucopia_items = ["an AWP", "a belt of grenades"]
+num_inner_cornucopia_items = 3
 at_corn = []
 players = []
-is_running = []
+is_running = [];
 def start_game():
     #print(s_stats)
     for i in range(len(Names)):
