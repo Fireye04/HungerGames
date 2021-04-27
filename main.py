@@ -68,152 +68,81 @@ inner_cornucopia_items = ["an AWP", "a belt of grenades"]
 num_inner_cornucopia_items = 3
 at_corn = []
 players = []
-is_running = [];
-def start_game():
-    #print(s_stats)
-    for i in range(len(Names)):
-        playerX = Player(Names[i], 1, s_stats[i], False)
-        if playerX.get_busy() == False:
-            players.append(playerX)
-            # smart players will run away by default to avoid a frontal fight
-            if r.choice([True, False, False, False]) or playerX.get_stat() == stats.WIS:
-                #print(playerX.get_stat())
-                #FIRST STAY OR Run
-                print(f"{playerX.get_name()} runs away into the arena to avoid the cornucopia.")
-                is_running.append(playerX)
+is_running = []
+def game_initialize():
+    for index, i in enumerate(Names):
+        player = Player(i, 1, s_stats[index], False)
+        if not player.get_busy():
+            if r.choice([True, False, False, False]) or player.get_stat() == stats.WIS:
+                print('{name} runs away into the arena to avoid the cornucopia.'.format(name=player.get_name()))
+                is_running.append(player)
             else:
-                #print(playerX.get_stat())
                 randItem = r.choice(cornocopia_items)
-                #set to true for testing change back
-                if True:
-                    #Second stay or run
-                    if i != 23:
-                        if playerX.get_stat() == stats.DEX:
-                            # if good stat is dex, they get out with an item scot free
-                            is_running.append(playerX)
-                            print(f"{playerX.get_name()} speeds into the cornucpoia, randomly grabs {randItem}, and quickly runs away into the arena.")
-                            playerX.give_item(randItem)
-                        else:
-                            # fights over item in cornucopia. 
-                            #only use this iteration on the first fight, as it DOES NOT account for deaths
-                            playerXplusone = Player(Names[i+1], 1, s_stats[i+1], False)
-                            playerXplusone.set_busy(True)
-                            # Running fights off d20 rolls. 1-15 will win in a melee battle if they have str and the other doesn't. 1-10 if they're equally matched. If they lose and have a charisma stat, they get a 1d2 roll to be spared. if they have a con stat they have a chance of surving the attack.
-                            fight = r.randint(1,20)
-                            #if playerX has STR and Xplusone doesn't
-                            if playerX.get_stat() == stats.STR and playerXplusone.get_stat() != stats.STR:
-                                if fight >= 2 and fight <= 15:
-                                    if playerXplusone.get_stat() == stats.CON:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} survives due to his high constitution.")
-                                        playerX.give_item(randItem)
-                                        playerXplusone.set_const(-0.25)
-                                    elif playerXplusone.get_stat() == stats.CHA:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} takes mercy on {playerXplusone.get_name()}, and spares his life.")
-                                        playerX.give_item(randItem)
-                                        playerXplusone.set_const(-0.25)
-                                elif fight == 1:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} was killed in the fight.")
-                                    #SET PLAYERXPLUSONE TO DEAD
-                                    playerX.give_item(randItem)
-                                elif fight == 20:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} was heavily injured in the fight.")
-                                    playerXplusone.give_item(randItem)
-                                    playerX.set_const(-0.5)
-                                    playerXplusone.set_const(-0.25)
-                                else:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. Both tributes emerge relatively unscathed.")
-                                    playerXplusone.give_item(randItem)
-                            #if playerX doesn't have STR and Xplusone does
-                            elif playerXplusone.get_stat() == stats.STR and playerX.get_stat() != stats.STR:
-                                if fight >= 2 and fight <= 15:
-                                    if playerX.get_stat() == stats.CON:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} survives due to his high constitution.")
-                                        playerXplusone.give_item(randItem)
-                                        playerX.set_const(-0.25)
-                                    elif playerX.get_stat() == stats.CHA:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} takes mercy on {playerX.get_name()}, and spares his life.")
-                                        playerXplusone.give_item(randItem)
-                                        playerX.set_const(-0.25)
-                                elif fight == 1:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} was killed in the fight.")
-                                    #SET PLAYERX TO DEAD
-                                    playerXplusone.give_item(randItem)
-                                elif fight == 20:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} was heavily injured in the fight.")
-                                    playerX.give_item(randItem)
-                                    playerXplusone.set_const(-0.5)
-                                else:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. Both tributes emerge relatively unscathed.")
-                                    playerX.give_item(randItem)
-                            #if both have STR
-                            elif playerXplusone.get_stat() == stats.STR and playerX.get_stat() == stats.STR:
-                                if fight >= 2 and fight <= 10:
-                                    if playerXplusone.get_stat() == stats.CON:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} survives due to his high constitution.")
-                                        playerX.give_item(randItem)
-                                        playerXplusone.set_const(-0.25)
-                                    elif playerXplusone.get_stat() == stats.CHA:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} takes mercy on {playerXplusone.get_name()}, and spares his life.")
-                                        playerX.give_item(randItem)
-                                        playerXplusone.set_const(-0.25)
-                                elif fight == 1:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} was killed in the fight.")
-                                    #SET PLAYERXPLUSONE TO DEAD
-                                    playerX.give_item(randItem)
-                                elif fight == 20:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} was killed in the fight.")
-                                    #SET PLAYERX TO DEAD
-                                    playerXplusone.give_item(randItem)
-                                else:
-                                    if playerX.get_stat() == stats.CON:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} survives due to his high constitution.")
-                                        playerXplusone.give_item(randItem)
-                                        playerX.set_const(-0.25)
-                                    elif playerX.get_stat() == stats.CHA:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} takes mercy on {playerX.get_name()}, and spares his life.")
-                                        playerXplusone.give_item(randItem)
-                                        playerX.set_const(-0.25)
-                            #if neither have STR
-                            else:
-                                if fight >= 2 and fight <= 10:
-                                    if playerXplusone.get_stat() == stats.CON:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} survives due to his high constitution.")
-                                        playerX.give_item(randItem)
-                                        playerXplusone.set_const(-0.25)
-                                    elif playerXplusone.get_stat() == stats.CHA:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} takes mercy on {playerXplusone.get_name()}, and spares his life.")
-                                        playerX.give_item(randItem)
-                                        playerXplusone.set_const(-0.25)
-                                elif fight == 1:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and wins a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} was heavily injured in the fight.")
-                                    playerX.give_item(randItem)
-                                    playerXplusone.set_const(-0.5)
-                                elif fight == 20:
-                                    print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} was heavily injured in the fight.")
-                                    playerXplusone.give_item(randItem)
-                                    playerX.set_const(-0.5)
-                                else:
-                                    if playerX.get_stat() == stats.CON:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerX.get_name()} survives due to his high constitution.")
-                                        playerXplusone.give_item(randItem)
-                                        playerX.set_const(-0.25)
-                                    elif playerX.get_stat() == stats.CHA:
-                                        print(f"{playerX.get_name()} runs towards the cornucpoia and loses a fight with {playerXplusone.get_name()} over {randItem}. {playerXplusone.get_name()} takes mercy on {playerX.get_name()}, and spares his life.")
-                                        playerXplusone.give_item(randItem)
-                                        playerX.set_const(-0.25)
-                            
-                        
+                if r.choice([True, False]):
+                    if player.get_stat() == stats.DEX:
+                        is_running.append(player)
+                        player.give_item(randItem)
+                        print('{name} speeds into the cornucopia, randomly grabs {item}, and quickly runs away'.format(name=player.get_name(), item=randItem))
                     else:
-                        is_running.append(playerX)
-                        print(f"{playerX.get_name()} goes into the cornucpoia, randomly grabs {randItem}, and quickly runs away into the arena.")
+                        #forced to fight
+                        at_corn.append(player)
                 else:
-                    # In cornucopia and staying
-                    print(f'{playerX.get_name()} runs into the cornucopia, grabs {randItem} and stays')
-                    at_corn.append(playerX)
-                    playerX.give_item(randItem)
+                    print('{name} runs into the cornucopia, grabs {item} and stays'.format(name=player.get_name(), item=randItem))
+                    at_corn.append(player)
+                    player.give_item(randItem)
+def fight(player1:Player, player2:Player):
+    player1.set_busy(True)
+    player2.set_busy(True)
+    fight_const_x = gen_fight_const(player1)
+    fight_const_y = gen_fight_const(player2)
+    if fight_const_x>fight_const_y:
+        if player2.get_stat() != stats.CHA:
+            if player2.get_stat() == stats.CON:
+                player2.set_const(-0.75)
+            else:
+                players.remove(player2)
+        #player one wins
+        return player1
+    if fight_const_y>fight_const_x:
+        if player1.get_stat() != stats.CHA:
+            if player1.get_stat == stats.CON:
+                player1.set_const(-0.75)
+            else:
+                players.remove(player1)
+        #player 2 wins
+        return player2
+    if fight_const_x==fight_const_y:
+        if player1.get_stat() == stats.CON:
+            player1.set_const(-0.25)
+        else:
+            player1.set_const(-0.5)
+        if player2.get_stat() == stats.CON:
+            player2.set_const(-0.25)
+        else:
+            player2.set_const(-0.5)
+        #nobody wins
+        return None
+
+def gen_fight_const(player:Player):
+    if player.get_stat() == stats.STR:
+        return max(r.randint(0,20), r.randint(0,20))
+
+def corn_fights():
+    while at_corn:
+        p1 = r.choice(at_corn)
+        at_corn.remove(p1)
+        p2 = r.choice(at_corn)
+        at_corn.remove(p2)
+        p_winner = fight(p1, p2)
+        if p_winner != None:
+            pass
+            
+game_initialize()
+for p in at_corn:
+    print(p)
                     # make a list of all the people staying, then run it through a function that lets them battle it out.
             
-start_game()
+
 
 
 # with every task that deducts survival mod, if it drops below 0 on that task, then that task kills you.
