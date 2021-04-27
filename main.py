@@ -241,7 +241,7 @@ def corn_fights():
         if(len(at_corn) == 1):
             x = at_corn[0]
             #last one standing is the winner
-            print(f"{x.get_name()} is the last remaining tribute at the cornucopia! They gather their loot.")
+            print(f"{x.get_name()} is the last remaining tribute at the cornucopia! They gather their loot.\n")
             for i in all_items:
                 x.give_item(i)
             at_corn.remove(x)
@@ -302,7 +302,7 @@ def cannons ():
     print(f"The images of the following tributes flash in the sky:\n")
     for tribute in dead:   
         print(tribute.get_name() + "\n")
-        dead.remove(tribute)
+    dead.clear()
 
 
 def gameManager ():
