@@ -214,32 +214,38 @@ def gen_fight_const(player:Player):
 def corn_fights():
     #runs corn functions while someone exists
     while at_corn:
+        if(len(at_corn) == 1):
+            x = at_corn[0]
+            at_corn.remove(x)
+            is_running.append(x)
+            return
+        print(len(at_corn))
         p1 = r.choice(at_corn)
         at_corn.remove(p1)
         p2 = r.choice(at_corn)
         at_corn.remove(p2)
         p_winner = fight(p1, p2)
         # XD you thought you were fighting? hell naw!
-        if(len(at_corn) == 1):
-            x = at_corn[0]
-            at_corn.remove(x)
-            is_running.append(x)
+        
         if p_winner != None:
-            pass
+            at_corn.append(p_winner)
 
 def corn_fights2():
     #runs corn functions while someone exists
     while by_corn:
+        if(len(by_corn) == 1):
+            x = by_corn[0]
+            by_corn.remove(x)
+            is_running.append(x)
+            return
+        print(len(by_corn))
         p1 = r.choice(by_corn)
         by_corn.remove(p1)
         p2 = r.choice(by_corn)
         by_corn.remove(p2)
         p_winner = item_fight(p1, p2, r.choice(cornucopia_items))
         # XD you thought you were fighting? hell naw!
-        if(len(by_corn) == 1):
-            x = by_corn[0]
-            by_corn.remove(x)
-            is_running.append(x)
+        
         if p_winner != None:
             pass
 
@@ -248,6 +254,8 @@ def corn_fights2():
 game_initialize()
 
 corn_fights2()
+
+corn_fights()
 # make a list of all the people staying, then run it through a function that lets them battle it out.
             
 
