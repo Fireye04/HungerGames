@@ -100,32 +100,86 @@ def fight(player1:Player, player2:Player):
     fight_const_x = gen_fight_const(player1)
     fight_const_y = gen_fight_const(player2)
     if fight_const_x>fight_const_y:
-        if player2.get_stat() != stats.CHA:
-            if player2.get_stat() == stats.CON:
-                player2.set_const(-0.75)
-            else:
-                players.remove(player2)
+        if player2.get_stat() == stats.CHA:
+            player2.set_const(-0.5)
+        if player2.get_stat() == stats.CON:
+            player2.set_const(-0.5)
+        else:
+            players.remove(player2)
         #player one wins
         return player1
     if fight_const_y>fight_const_x:
         if player1.get_stat() != stats.CHA:
-            if player1.get_stat == stats.CON:
-                player1.set_const(-0.75)
-            else:
-                players.remove(player1)
+            player1.set_const(-0.5)
+        if player1.get_stat == stats.CON:
+            player1.set_const(-0.5)
+        else:
+            players.remove(player1)
         #player 2 wins
         return player2
     if fight_const_x==fight_const_y:
+        
+
         if player1.get_stat() == stats.CON:
             player1.set_const(-0.25)
+        if player2.get_stat() == stats.CHA:
+            player2.set_const(-0.25)
         else:
             player1.set_const(-0.5)
+        
         if player2.get_stat() == stats.CON:
+            player2.set_const(-0.25)
+        if player2.get_stat() == stats.CHA:
             player2.set_const(-0.25)
         else:
             player2.set_const(-0.5)
         #nobody wins
         return None
+
+# THIS FUNCTIONS IS FOR FIGHTS OVER AN OBJECT
+def item_corn_fight(player1:Player, player2:Player, item):
+    #fight function. It just runs based on d20 rolls
+    player1.set_busy(True)
+    player2.set_busy(True)
+    fight_const_x = gen_fight_const(player1)
+    fight_const_y = gen_fight_const(player2)
+    if fight_const_x>fight_const_y:
+        if player2.get_stat() == stats.CHA:
+            player2.set_const(-0.5)
+        if player2.get_stat() == stats.CON:
+            player2.set_const(-0.5)
+        else:
+            players.remove(player2)
+        #player one wins
+        return player1
+    if fight_const_y>fight_const_x:
+        if player1.get_stat() != stats.CHA:
+            player1.set_const(-0.5)
+        if player1.get_stat == stats.CON:
+            player1.set_const(-0.5)
+        else:
+            players.remove(player1)
+        #player 2 wins
+        return player2
+    if fight_const_x==fight_const_y:
+        
+
+        if player1.get_stat() == stats.CON:
+            player1.set_const(-0.25)
+        if player2.get_stat() == stats.CHA:
+            player2.set_const(-0.25)
+        else:
+            player1.set_const(-0.5)
+        
+        if player2.get_stat() == stats.CON:
+            player2.set_const(-0.25)
+        if player2.get_stat() == stats.CHA:
+            player2.set_const(-0.25)
+        else:
+            player2.set_const(-0.5)
+        #nobody wins
+        return None
+
 
 def gen_fight_const(player:Player):
     #roll with advantage if str
