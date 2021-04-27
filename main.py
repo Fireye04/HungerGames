@@ -218,6 +218,8 @@ def corn_fights():
             x = at_corn[0]
             at_corn.remove(x)
             is_running.append(x)
+            return
+        print(len(at_corn))
         p1 = r.choice(at_corn)
         at_corn.remove(p1)
         p2 = r.choice(at_corn)
@@ -235,6 +237,8 @@ def corn_fights2():
             x = by_corn[0]
             by_corn.remove(x)
             is_running.append(x)
+            return
+        print(len(by_corn))
         p1 = r.choice(by_corn)
         by_corn.remove(p1)
         p2 = r.choice(by_corn)
