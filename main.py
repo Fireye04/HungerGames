@@ -155,6 +155,7 @@ def item_fight(player1:Player, player2:Player, item):
             players.remove(player2)
             print(f"{player1.get_name} won a fight with {player2.get_name} over {item} and killed {player2.get_name} in the fight")
         #player one wins
+        player1.give_item(item)
         return player1
     if fight_const_y>fight_const_x:
         if player1.get_stat() != stats.CHA:
@@ -167,21 +168,29 @@ def item_fight(player1:Player, player2:Player, item):
             players.remove(player1)
             print(f"{player2.get_name} won a fight with {player1.get_name} over {item} and killed {player1.get_name} in the fight")
         #player 2 wins
+        player2.give_item(item)
         return player2
     if fight_const_x==fight_const_y:
-        if player1.get_stat() == stats.CON:
-            player1.set_const(-0.25)
-        if player2.get_stat() == stats.CHA:
-            player2.set_const(-0.25)
+
+        if r.choice([True, False]):
+            player1.give_item(item)
+            print(f"{player1.get_name} fought {player2.get_name} over {item} and won it. Both tributes emerged from the battle relatively unscathed.")
         else:
-            player1.set_const(-0.5)
+            player2.give_item(item)
+            print(f"{player2.get_name} fought {player1.get_name} over {item} and won it. Both tributes emerged from the battle relatively unscathed.")
+        if player1.get_stat() == stats.CON:
+            player1.set_const(-0.1)
+        if player2.get_stat() == stats.CHA:
+            player2.set_const(-0.1)
+        else:
+            player1.set_const(-0.25)
         
         if player2.get_stat() == stats.CON:
-            player2.set_const(-0.25)
+            player2.set_const(-0.1)
         if player2.get_stat() == stats.CHA:
-            player2.set_const(-0.25)
+            player2.set_const(-0.1)
         else:
-            player2.set_const(-0.5)
+            player2.set_const(-0.25)
         #nobody wins
         return None
 
