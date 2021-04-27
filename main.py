@@ -53,6 +53,8 @@ class Player(object):
     def give_item(self, item):
       self.item_list.append(item)
       return item
+    def get_items ():
+        return self.item_list()
     def get_alive(self):
         return self.is_alive
     def set_alive (self, life):
@@ -64,10 +66,11 @@ class Team(object):
     pass
 
 cornucopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an axe", "some corn"]
-inner_cornucopia_items = ["an AWP", "a belt of grenades"]
+inner_cornucopia_items = ["an AWP", "a belt of grenades", "a katana"]
 all_items = cornucopia_items + inner_cornucopia_items
 
 num_inner_cornucopia_items = 3
+player_options = []
 at_corn = []
 by_corn = []
 players = []
@@ -272,13 +275,41 @@ def corn_fights2():
         if p_winner != None:
             pass
 
+def randomEventManager ():
+    # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
+    for index, i in range(len(players)):
+        player = players[i]
+        pItems = player.get_items()
+        #checks for bladed items
+        if "a sword" in pItems or "an axe" in pItems or "a katana" in pItems:
+            #CUTS TREE
+            player_options.append("cuts tree")
 
-            
-game_initialize()
+        #checks for weapons
+        if "a sword" in pItems or "an axe" in pItems or "a katana" in pItems  or "a knife" in pItems or "a belt of grenades" in pItems:
+            #HUNTS ENEMY
+            player_options.append("hunts enemy")
+            #HUNTS FOOD
+            player_options.append("hunts food")
 
-corn_fights2()
 
-corn_fights()
+
+
+def gameManager ():
+    game_initialize()
+
+    corn_fights2()
+
+    corn_fights()
+
+    randomEventManager()
+
+
+gameManager()
+
+
+
+
 # make a list of all the people staying, then run it through a function that lets them battle it out.
             
 
