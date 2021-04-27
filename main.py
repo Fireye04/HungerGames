@@ -53,8 +53,8 @@ class Player(object):
     def give_item(self, item):
       self.item_list.append(item)
       return item
-    def get_items ():
-        return self.item_list()
+    def get_items (self):
+        return self.item_list
     def get_alive(self):
         return self.is_alive
     def set_alive (self, life):
@@ -73,6 +73,7 @@ num_inner_cornucopia_items = 3
 player_options = []
 at_corn = []
 by_corn = []
+dead = []
 players = []
 is_running = []
 def game_initialize():
@@ -113,12 +114,13 @@ def fight(player1:Player, player2:Player):
             player2.set_const(-0.5)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player2)
-        if player2.get_stat() == stats.CON:
+        elif player2.get_stat() == stats.CON:
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player2)
             player2.set_const(-0.5)
         else:
             players.remove(player2)
+            dead.append(player2)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
         #player one wins
         return player1
@@ -127,14 +129,15 @@ def fight(player1:Player, player2:Player):
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player1)
             player1.set_const(-0.5)
-        if player1.get_stat == stats.CON:
+        elif player1.get_stat == stats.CON:
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player1)
             player1.set_const(-0.5)
         else:
             players.remove(player1)
-        #player 2 wins
-        print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()} in the fight\n")
+            dead.append(player1)
+            #player 2 wins
+            print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()} in the fight\n")
         return player2
     if fight_const_x==fight_const_y:
         
@@ -142,14 +145,14 @@ def fight(player1:Player, player2:Player):
 
         if player1.get_stat() == stats.CON:
             player1.set_const(-0.1)
-        if player2.get_stat() == stats.CHA:
+        elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.1)
         else:
             player1.set_const(-0.25)
         
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.1)
-        if player2.get_stat() == stats.CHA:
+        elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.1)
         else:
             player2.set_const(-0.25)
@@ -168,12 +171,13 @@ def item_fight(player1:Player, player2:Player, item):
             player2.set_const(-0.5)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but spared {player2.get_name()}'s life. {player1.get_name()} Then runs away into the arena.\n")
             is_running.append(player1)
-        if player2.get_stat() == stats.CON:
+        elif player2.get_stat() == stats.CON:
             player2.set_const(-0.25)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} Then runs away into the arena.\n")
             is_running.append(player1)
         else:
             players.remove(player2)
+            dead.append(player2)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item} and killed {player2.get_name()} in the fight. {player1.get_name()} Then runs away into the arena.\n")
             is_running.append(player1)
         #player one wins
@@ -185,12 +189,13 @@ def item_fight(player1:Player, player2:Player, item):
             print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but spared {player1.get_name()}'s life. {player2.get_name()} Then runs away into the arena.\n")
             is_running.append(player2)
             is_running.append(player2)
-        if player1.get_stat == stats.CON:
+        elif player1.get_stat == stats.CON:
             player1.set_const(-0.25)
             print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but {player1.get_name()} managed to survive the attack due to their high constitution.{player2.get_name()} Then runs away into the arena.\n")
             is_running.append(player2)
         else:
             players.remove(player1)
+            dead.append(player1)
             print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item} and killed {player1.get_name()} in the fight. {player2.get_name()} Then runs away into the arena.\n")
             is_running.append(player2)
         #player 2 wins
@@ -208,14 +213,14 @@ def item_fight(player1:Player, player2:Player, item):
         is_running.append(player1)
         if player1.get_stat() == stats.CON:
             player1.set_const(-0.1)
-        if player2.get_stat() == stats.CHA:
+        elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.1)
         else:
             player1.set_const(-0.25)
         
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.1)
-        if player2.get_stat() == stats.CHA:
+        elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.1)
         else:
             player2.set_const(-0.25)
@@ -277,7 +282,7 @@ def corn_fights2():
 
 def randomEventManager ():
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
-    for index, i in range(len(players)):
+    for i in range(len(players)):
         player = players[i]
         pItems = player.get_items()
         #checks for bladed items
@@ -292,7 +297,12 @@ def randomEventManager ():
             #HUNTS FOOD
             player_options.append("hunts food")
 
-
+def cannons ():
+    print(f"As night falls, the cannon fires {len(dead)} times.\n")
+    print(f"The images of the following tributes flash in the sky:\n")
+    for tribute in dead:   
+        print(tribute.get_name() + "\n")
+        dead.remove(tribute)
 
 
 def gameManager ():
@@ -301,6 +311,8 @@ def gameManager ():
     corn_fights2()
 
     corn_fights()
+
+    cannons()
 
     randomEventManager()
 
