@@ -53,8 +53,8 @@ class Player(object):
     def give_item(self, item):
       self.item_list.append(item)
       return item
-    def get_items ():
-        return self.item_list()
+    def get_items (self):
+        return self.item_list
     def get_alive(self):
         return self.is_alive
     def set_alive (self, life):
@@ -277,8 +277,8 @@ def corn_fights2():
 
 def randomEventManager ():
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
-    for index, i in range(len(players)):
-        player = players[i]
+    for index, player in enumerate(players):
+        #player = i
         pItems = player.get_items()
         #checks for bladed items
         if "a sword" in pItems or "an axe" in pItems or "a katana" in pItems:
