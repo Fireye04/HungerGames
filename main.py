@@ -303,6 +303,22 @@ def randomEventManager ():
         if player.get_stat() == stats.WIS:
             #craft item
             player_options.append("craft item")
+
+        if player.get_stat() != stats.WIS:
+            #DRINK CACTUS JUICE
+            player_options.append("cactus juice")
+
+        if "an AWP" in pItems:
+            #snoipe
+            player_options.append("snipe")
+
+        if "a belt of grenades" in pItems:
+            #trap
+            player_options.append("grenade trap")
+
+        #universal
+        player_options.append("water")
+        player_options.append("bear trap")
         
         
 
@@ -351,7 +367,7 @@ if they have dexterity- <name> manages to yoink <enemy tribute>'s <item>
 
 if they don't have wisdom- <name> cuts open a cactus and drinks the juice. They immediately say "Drink cactus juice. I'll quench ya. nothing's quenchier. it's the quenchiest." and become temporarily delusional. (-0.25 to survival mod) (and yes, you can die from drinking cactus juice.)
 
-if they have AWP and dexterity- (2/3rds chance) <name> manages to snipe <enemy tribute> with an AWP. (1/3rd chance) <name> barely misses <enemy tribute> with an AWP. | If they hit, the target dies unless they have constitution, in which case they are heavily injured. (-0.5 survival mod)
+if they have AWP- (2/3rds chance with DEX 1/3rd chance without) <name> manages to snipe <enemy tribute> with an AWP. (1/3rd chance with DEX 2/3rds chance without) <name> barely misses <enemy tribute> with an AWP. | If they hit, the target dies unless they have constitution, in which case they are heavily injured. (-0.5 survival mod)
 
 if they have grenade belt- <name> sets a trap with their grenade belt. roll 1d20. On 16-20: and <enemy tribute> exploded. on 2-15: but nobody fell for it. on 1: but they accidentally set it off. (-0.75 survival mod)
 
