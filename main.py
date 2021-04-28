@@ -69,6 +69,8 @@ cornucopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of ration
 inner_cornucopia_items = ["an AWP", "a belt of grenades", "a katana"]
 all_items = cornucopia_items + inner_cornucopia_items
 
+craftableItems = []
+
 num_inner_cornucopia_items = 3
 player_options = []
 at_corn = []
@@ -296,6 +298,14 @@ def randomEventManager ():
             player_options.append("hunts enemy")
             #HUNTS FOOD
             player_options.append("hunts food")
+        
+        #checks for wisdom
+        if player.get_stat() == stats.WIS:
+            #craft item
+            player_options.append("craft item")
+        
+        
+
 
 def cannons ():
     print(f"As night falls, the cannon fires {len(dead)} times.\n")
