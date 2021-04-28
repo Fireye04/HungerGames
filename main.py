@@ -6,6 +6,8 @@ Notes for future interactivity update
 for cornucopia allow each player to declare intent (whcih item they're going for, whether theyre staying or not, whether they team, etc)
 """
 
+#note to self: instead of adding non-weapon items to inventory, don't. instead, add survival mod and don't add item to inventory
+
 # note to self, when picking an enemy to fight for the cornucopia do not pick an enemy with a WIS stat. 
 
 class stats(enum.Enum):
@@ -55,6 +57,8 @@ class Player(object):
       return item
     def get_items (self):
         return self.item_list
+    def remove_item (self, item):
+        self.item_list.remove(item)
     def get_alive(self):
         return self.is_alive
     def set_alive (self, life):
@@ -65,11 +69,11 @@ class Player(object):
 class Team(object):
     pass
 
-cornucopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an axe", "some corn"]
+cornucopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an axe", "some corn", "a bow and some arrows"]
 inner_cornucopia_items = ["an AWP", "a belt of grenades", "a katana"]
 all_items = cornucopia_items + inner_cornucopia_items
 
-craftableItems = []
+craftableItems = ["a wooden spear", "a handaxe", "a stone spear", "a bow and some arrows"]
 
 num_inner_cornucopia_items = 3
 player_options = []
@@ -282,6 +286,80 @@ def corn_fights2():
         if p_winner != None:
             pass
 
+def sponsorChance (player:Player, activityCoolness):
+    #rolls a D20 at advantege if charisma, and adds coolness mod  to the roll
+
+    x = 0
+    if player.get_stat() == stats.CHA:
+        x = max(r.randint(0,20), r.randint(0,20))
+    else:
+        x = r.randint(0,20)
+
+    x += activityCoolness
+
+    if x >= 18:
+        print(f"{player.get_name()} was sent {r.choice(all_items)} by a mysterious sponsor.")
+
+def cuts_tree (player:Player):
+    tool = ""
+    if "a sword" in player.get_items():
+        tool = "sword"
+    if "a katana" in player.get_items():
+        tool = "katana"
+    if "an axe" in player.get_items():
+        tool = "axe"
+    
+    print(f"{player.get_name()} cuts down a tree wth their {tool} and builds a fire with the lumber.\n")
+
+    player.set_const(0.25)
+
+    sponsorChance(player, 1)
+
+##############SAVING FOR LATER###################
+def hunts_enemy (player:Player):
+    
+    print(f"{player.get_name()} hunts down an enemy.\n")
+
+    sponsorChance(player, 5)
+##############SAVING FOR LATER###################
+
+def hunts_food (player:Player):
+    weapon = ""
+    if "a belt of grenades" in player.get_items():
+        weapon = "belt of grenades"
+    if "a knife" in player.get_items():
+        weapon = "knife"
+    if "a sword" in player.get_items():
+        weapon = "sword"
+    if "an axe" in player.get_items():
+        weapon = "axe"
+    if "a katana" in player.get_items():
+        weapon = "katana"
+    if "a bow and some arrows" in player.get_items():
+        weapon = "bow"
+    
+    player.set_const(0.25)
+
+    if player.get_const() == stats.DEX:
+        if r.choice([True, True, True, False]):
+            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
+            sponsorChance(player, 4)
+
+        else:
+            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
+            sponsorChance(player, 1)
+    else:
+        if r.choice([True, False]):
+            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
+            if weapon == "belt of grenades":
+                player
+            sponsorChance(player, 4)
+        else:
+            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
+            sponsorChance(player, 1)
+
+    
+
 def randomEventManager ():
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
     for i in range(len(players)):
@@ -293,9 +371,9 @@ def randomEventManager ():
             player_options.append("cuts tree")
 
         #checks for weapons
-        if "a sword" in pItems or "an axe" in pItems or "a katana" in pItems  or "a knife" in pItems or "a belt of grenades" in pItems:
-            #HUNTS ENEMY
-            player_options.append("hunts enemy")
+        if "a sword" in pItems or "an axe" in pItems or "a katana" in pItems  or "a knife" in pItems or "a belt of grenades" in pItems or "a bow and some arrows" in pItems:
+            #HUNTS ENEMY, TEMPORARILY COMMENTED FOR TESTING
+            #player_options.append("hunts enemy")
             #HUNTS FOOD
             player_options.append("hunts food")
         
@@ -308,7 +386,7 @@ def randomEventManager ():
             #DRINK CACTUS JUICE
             player_options.append("cactus juice")
 
-        if "an AWP" in pItems:
+        if "an AWP" in pItems or "a bow and some arrows" in pItems:
             #snoipe
             player_options.append("snipe")
 
@@ -319,6 +397,27 @@ def randomEventManager ():
         #universal
         player_options.append("water")
         player_options.append("bear trap")
+
+        rActivity = r.choice(player_options)
+
+        if rActivity == "cuts tree":
+            cuts_tree(player)
+        elif rActivity == "hunts enemy":
+            pass
+        elif rActivity == "hunts food":
+            pass
+        elif rActivity == "craft item":
+            pass
+        elif rActivity == "cactus juice":
+            pass
+        elif rActivity == "snipe":
+            pass
+        elif rActivity == "grenade trap":
+            pass
+        elif rActivity == "water":
+            pass
+        elif rActivity == "bear trap":
+            pass
         
         
 
