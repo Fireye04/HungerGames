@@ -69,6 +69,97 @@ class Player(object):
 class Team(object):
     pass
 
+class medkit (object):
+    def __init__(self):
+        self.name = "a medkit"
+        self.type = "assist"
+        self.assistVal = 0.5
+
+    def get_type (self):
+        return self.type
+
+class knife (object):
+    def __init__(self):
+        self.name = "a knife"
+        self.type = "weapon"
+        self.assistVal = 0
+
+    def get_type (self):
+        return self.type
+
+class sword (object):
+    def __init__(self):
+        self.name = "a sword"
+        self.type = "weapon"
+        self.assistVal = 0
+
+    def get_type (self):
+        return self.type
+
+class rations (object):
+    def __init__(self):
+        self.name = "a sword"
+        self.type = "assist"
+        self.assistVal = 0.25
+
+    def get_type (self):
+        return self.type
+
+class axe (object):
+    def __init__(self):
+        self.name = "an axe"
+        self.type = "weapon"
+        self.assistVal = 0
+
+    def get_type (self):
+        return self.type
+
+class corn (object):
+    def __init__(self):
+        self.name = "some corn"
+        self.type = "assist"
+        self.assistVal = 0.25
+
+    def get_type (self):
+        return self.type
+
+class bow (object):
+    def __init__(self):
+        self.name = "a bow and some arrows"
+        self.type = "weapon"
+        self.assistVal = 0
+
+    def get_type (self):
+        return self.type
+
+class AWP (object):
+    def __init__(self):
+        self.name = "an AWP"
+        self.type = "weapon"
+        self.assistVal = 0
+
+    def get_type (self):
+        return self.type
+
+class grenades (object):
+    def __init__(self):
+        self.name = "a belt of grenades"
+        self.type = "weapon"
+        self.assistVal = 0
+
+    def get_type (self):
+        return self.type
+
+class katana (object):
+    def __init__(self):
+        self.name = "a katana"
+        self.type = "weapon"
+        self.assistVal = 0
+
+    def get_type (self):
+        return self.type
+
+
 cornucopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an axe", "some corn", "a bow and some arrows"]
 inner_cornucopia_items = ["an AWP", "a belt of grenades", "a katana"]
 all_items = cornucopia_items + inner_cornucopia_items
