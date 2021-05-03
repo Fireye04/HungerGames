@@ -18,6 +18,7 @@ class item_directory(enum.Enum):
     KATANA = ['a katana', types.WEAPON, 0]
     WOOD_SPEAR = ['a wooden spear', types.WEAPON, 0]
     STONE_SPEAR = ['a stone spear', types.WEAPON, 0]
+    MEAT = ['a chunk of meat', types.ASSIST, 0.25]
     def __str__(self):
         return self.value[0]
 def initialize_object_list(e:list):
@@ -27,11 +28,11 @@ def initialize_object_list(e:list):
     return items_list
 class item(object):
     def __init__(self, data:item_directory):
+        self.it = data
         data = data.value
         self.name = data[0]
         self.type = data[1]
         self.ass_val = data[2]
-        self.it = data
     def get_type(self):
         return self.type
     def __str__(self):

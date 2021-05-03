@@ -1,5 +1,6 @@
 import enum
 import random as r
+from item import *
 
 """
 Notes for future interactivity update
@@ -57,6 +58,11 @@ class Player(object):
       return item
     def get_items (self):
         return self.item_list
+    def get_items_enums(self):
+        y = []
+        for i in self.item_list:
+            y.append(i.value())
+        return y
     def remove_item (self, item):
         self.item_list.remove(item)
     def get_alive(self):
@@ -69,102 +75,14 @@ class Player(object):
 class Team(object):
     pass
 
-class medkit (object):
-    def __init__(self):
-        self.name = "a medkit"
-        self.type = "assist"
-        self.assistVal = 0.5
-
-    def get_type (self):
-        return self.type
-
-class knife (object):
-    def __init__(self):
-        self.name = "a knife"
-        self.type = "weapon"
-        self.assistVal = 0
-
-    def get_type (self):
-        return self.type
-
-class sword (object):
-    def __init__(self):
-        self.name = "a sword"
-        self.type = "weapon"
-        self.assistVal = 0
-
-    def get_type (self):
-        return self.type
-
-class rations (object):
-    def __init__(self):
-        self.name = "a sword"
-        self.type = "assist"
-        self.assistVal = 0.25
-
-    def get_type (self):
-        return self.type
-
-class axe (object):
-    def __init__(self):
-        self.name = "an axe"
-        self.type = "weapon"
-        self.assistVal = 0
-
-    def get_type (self):
-        return self.type
-
-class corn (object):
-    def __init__(self):
-        self.name = "some corn"
-        self.type = "assist"
-        self.assistVal = 0.25
-
-    def get_type (self):
-        return self.type
-
-class bow (object):
-    def __init__(self):
-        self.name = "a bow and some arrows"
-        self.type = "weapon"
-        self.assistVal = 0
-
-    def get_type (self):
-        return self.type
-
-class AWP (object):
-    def __init__(self):
-        self.name = "an AWP"
-        self.type = "weapon"
-        self.assistVal = 0
-
-    def get_type (self):
-        return self.type
-
-class grenades (object):
-    def __init__(self):
-        self.name = "a belt of grenades"
-        self.type = "weapon"
-        self.assistVal = 0
-
-    def get_type (self):
-        return self.type
-
-class katana (object):
-    def __init__(self):
-        self.name = "a katana"
-        self.type = "weapon"
-        self.assistVal = 0
-
-    def get_type (self):
-        return self.type
 
 
-cornucopia_items = ['a medkit', 'a knife', "a sword", "a backpack full of rations", "an axe", "some corn", "a bow and some arrows"]
-inner_cornucopia_items = ["an AWP", "a belt of grenades", "a katana"]
+#TODO: rewrite this
+cornucopia_items = initialize_object_list([item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD, item_directory.RATIONS, item_directory.AXE, item_directory.CORN, item_directory.BOW])
+inner_cornucopia_items = initialize_object_list([item_directory.AWP, item_directory.GRENADES, item_directory.KATANA])
 all_items = cornucopia_items + inner_cornucopia_items
 
-craftableItems = ["a wooden spear", "a handaxe", "a stone spear", "a bow and some arrows"]
+craftableItems = initialize_object_list([item_directory.WOOD_SPEAR, item_directory.AXE, item_directory.STONE_SPEAR, item_directory.BOW])
 
 num_inner_cornucopia_items = 3
 player_options = []
@@ -389,17 +307,18 @@ def sponsorChance (player:Player, activityCoolness):
     x += activityCoolness
 
     if x >= 18:
+        # ITEMS REFERENCING EARLIER LIST AND NOT ENUM LIST
         print(f"{player.get_name()} was sent {r.choice(all_items)} by a mysterious sponsor.")
 
+
 def cuts_tree (player:Player):
-    tool = ""
-    if "a sword" in player.get_items():
+    tool = "e"
+    if item_directory.SWORD in player.get_items_enums():
         tool = "sword"
-    if "a katana" in player.get_items():
+    if item_directory.KATANA in player.get_items_enums():
         tool = "katana"
-    if "an axe" in player.get_items():
+    if item_directory.AXE in player.get_items_enums():
         tool = "axe"
-    
     print(f"{player.get_name()} cuts down a tree wth their {tool} and builds a fire with the lumber.\n")
 
     player.set_const(0.25)
@@ -416,18 +335,19 @@ def hunts_enemy (player:Player):
 
 def hunts_food (player:Player):
     weapon = ""
-    if "a belt of grenades" in player.get_items():
+    p = player.get_items_enums()
+    if item_directory.GRENADES in p:
         weapon = "belt of grenades"
-    if "a knife" in player.get_items():
+    if item_directory.KNIFE in p:
         weapon = "knife"
-    if "a sword" in player.get_items():
+    if item_directory.SWORD in p:
         weapon = "sword"
-    if "an axe" in player.get_items():
+    if item_directory.AXE in p:
         weapon = "axe"
-    if "a katana" in player.get_items():
+    if item_directory.KATANA in p:
         weapon = "katana"
-    if "a bow and some arrows" in player.get_items():
-        weapon = "bow"
+    if item_directory.BOW in p:
+        weapon = "bow and arrows"
     
     player.set_const(0.25)
 
@@ -456,14 +376,20 @@ def randomEventManager ():
 
     for index, player in enumerate(players):
         #player = i
-        pItems = player.get_items()
+        pItems = player.get_items_enums()
         #checks for bladed items
-        if "a sword" in pItems or "an axe" in pItems or "a katana" in pItems:
+        #for i in pItems:print(type(i))
+        #for i in player.get_items_enums():print(type(i))
+        
+        if item_directory.SWORD in pItems:
+            #CUTS TREE
+            player_options.append("cuts tree")
+        if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems:
             #CUTS TREE
             player_options.append("cuts tree")
 
         #checks for weapons
-        if "a sword" in pItems or "an axe" in pItems or "a katana" in pItems  or "a knife" in pItems or "a belt of grenades" in pItems or "a bow and some arrows" in pItems:
+        if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems  or item_directory.KNIFE in pItems or item_directory.GRENADES in pItems or item_directory.BOW in pItems:
             #HUNTS ENEMY, TEMPORARILY COMMENTED FOR TESTING
             #player_options.append("hunts enemy")
             #HUNTS FOOD
@@ -478,26 +404,26 @@ def randomEventManager ():
             #DRINK CACTUS JUICE
             player_options.append("cactus juice")
 
-        if "an AWP" in pItems or "a bow and some arrows" in pItems:
+        if item_directory.AWP in pItems or item_directory.BOW in pItems:
             #snoipe
             player_options.append("snipe")
 
-        if "a belt of grenades" in pItems:
+        if item_directory.GRENADES in pItems:
             #trap
             player_options.append("grenade trap")
 
         #universal
         player_options.append("water")
         player_options.append("bear trap")
-
+        #print(player_options)
         rActivity = r.choice(player_options)
-
+        #rActivity = "cuts tree"
         if rActivity == "cuts tree":
             cuts_tree(player)
         elif rActivity == "hunts enemy":
             pass
         elif rActivity == "hunts food":
-            pass
+            hunts_food(player)
         elif rActivity == "craft item":
             pass
         elif rActivity == "cactus juice":
@@ -510,6 +436,8 @@ def randomEventManager ():
             pass
         elif rActivity == "bear trap":
             pass
+        
+        player_options.clear()
         
         
 
@@ -583,4 +511,10 @@ misc- <name> searches for a water source and is/isn't successful (if found +0.25
 
 # add a function that generates random events on a person by person basis
 
+"""
+IMPORTANT PAY ATTENTION
+NEW INFORMATION: use player.get_item_enums and item_directory.OBJECT in order to get specific weapons
+ONLY COMPARE BETWEEN THE item_directory enum and get_item_enums!!!!
+initalization of lists in item class for brevity.
 
+"""
