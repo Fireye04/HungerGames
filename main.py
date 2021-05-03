@@ -308,7 +308,7 @@ def sponsorChance (player:Player, activityCoolness):
 
     if x >= 18:
         # ITEMS REFERENCING EARLIER LIST AND NOT ENUM LIST
-        print(f"{player.get_name()} was sent {r.choice(all_items)} by a mysterious sponsor.")
+        print(f"{player.get_name()} was sent {r.choice(all_items)} by a mysterious sponsor.\n")
 
 
 def cuts_tree (player:Player):
@@ -363,7 +363,7 @@ def hunts_food (player:Player):
         if r.choice([True, False]):
             print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
             if weapon == "belt of grenades":
-                player
+                player.get_items_enums().remove(item_directory.GRENADES)
             sponsorChance(player, 4)
         else:
             print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
@@ -377,6 +377,13 @@ def randomEventManager ():
     for index, player in enumerate(players):
         #player = i
         pItems = player.get_items_enums()
+
+        #checks for healing items and uses them by default.
+        for i in pItems:
+            if i.get_type() == types.ASSIST:
+                player.set_const(i.get_ass())
+                pItems.remove(i)
+
         #checks for bladed items
         #for i in pItems:print(type(i))
         #for i in player.get_items_enums():print(type(i))
