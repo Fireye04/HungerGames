@@ -7,10 +7,6 @@ Notes for future interactivity update
 for cornucopia allow each player to declare intent (whcih item they're going for, whether theyre staying or not, whether they team, etc)
 """
 
-#note to self: instead of adding non-weapon items to inventory, don't. instead, add survival mod and don't add item to inventory
-
-# note to self, when picking an enemy to fight for the cornucopia do not pick an enemy with a WIS stat. 
-
 class stats(enum.Enum):
     STR = 'S'
     CHA = 'C'
