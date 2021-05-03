@@ -7,7 +7,7 @@ class types(enum.Enum):
 class item_directory(enum.Enum):
     #test_item = ['Name', types.WEAPON, 'assist_value']
     MEDKIT = ['a medkit', types.ASSIST, 0.5]
-    KNIFE = ['a knive', types.WEAPON, 0]
+    KNIFE = ['a knife', types.WEAPON, 0]
     SWORD = ['a sword', types.WEAPON, 0]
     RATIONS = ['some rations', types.ASSIST, 0.25]
     AXE = ['an axe', types.WEAPON, 0]

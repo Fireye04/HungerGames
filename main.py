@@ -515,11 +515,18 @@ def randomEventManager ():
 
 
 def cannons ():
-    print(f"As night falls, the cannon fires {len(dead)} times.\n")
-    print(f"The images of the following tributes flash in the sky:\n")
-    for tribute in dead:   
-        print(tribute.get_name() + "\n")
-    dead.clear()
+    if len(dead) > 0:
+        print(f"As night falls, the cannon fires {len(dead)} times.\n")
+        print(f"The images of the following tributes flash in the sky:\n")
+        for tribute in dead:   
+            print(tribute.get_name() + "\n")
+        dead.clear()
+    elif len(dead) == 1:
+        print(f"As night falls, the cannon fires 1 time.\n")
+        print(f"The image of {tribute.get_name()} flashes in the sky.\n")
+        dead.clear()
+    else:
+        print(f"As night falls, the cannon remains silent.\n")
 
 
 def gameManager ():

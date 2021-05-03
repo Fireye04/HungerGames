@@ -1,5 +1,6 @@
 import enum
 import random as r
+from item import *
 
 """
 Notes for future interactivity update
@@ -60,7 +61,7 @@ class Player(object):
     def get_items_enums(self):
         y = []
         for i in self.item_list:
-            y.append(i.it)
+            y.append(i.value)
         return y
     def remove_item (self, item):
         self.item_list.remove(item)
@@ -164,7 +165,7 @@ class katana (object):
     def get_type (self):
         return self.type
 
-from item import *
+
 #TODO: rewrite this
 cornucopia_items = initialize_object_list([item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD, item_directory.RATIONS, item_directory.AXE, item_directory.CORN, item_directory.BOW])
 inner_cornucopia_items = initialize_object_list([item_directory.AWP, item_directory.GRENADES, item_directory.KATANA])
@@ -397,14 +398,15 @@ def sponsorChance (player:Player, activityCoolness):
     if x >= 18:
         print(f"{player.get_name()} was sent {r.choice(all_items)} by a mysterious sponsor.")
 
+
 def cuts_tree (player:Player):
     tool = 0
     if item_directory.SWORD in player.get_items_enums():
-        tool = item_directory.SWORD
+        tool = "sword"
     if item_directory.KATANA in player.get_items_enums():
-        tool = item_directory.SWORD
+        tool = "katana"
     if item_directory.AXE in player.get_items_enums():
-        tool = item_directory.SWORD
+        tool = "axe"
     if tool == 0:
         return
     print(f"{player.get_name()} cuts down a tree wth their {tool} and builds a fire with the lumber.\n")
@@ -464,8 +466,14 @@ def randomEventManager ():
 
     for index, player in enumerate(players):
         #player = i
-        pItems = player.get_items_enums()
+        pItems = player.get_items()
         #checks for bladed items
+        for i in pItems:
+            print(i)
+        if item_directory.SWORD in pItems:
+            #CUTS TREE
+            player_options.append("cuts tree")
+            print("cuts yee")
         if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems:
             #CUTS TREE
             player_options.append("cuts tree")
@@ -486,7 +494,7 @@ def randomEventManager ():
             #DRINK CACTUS JUICE
             player_options.append("cactus juice")
 
-        if item_directory.AWP in pItems or "a bow and some arrows" in pItems:
+        if item_directory.AWP in pItems or item_directory.BOW in pItems:
             #snoipe
             player_options.append("snipe")
 
@@ -497,15 +505,15 @@ def randomEventManager ():
         #universal
         player_options.append("water")
         player_options.append("bear trap")
-
+        #print(player_options)
         rActivity = r.choice(player_options)
-
+        #print(rActivity)
         if rActivity == "cuts tree":
             cuts_tree(player)
         elif rActivity == "hunts enemy":
             pass
         elif rActivity == "hunts food":
-            pass
+            hunts_food(player)
         elif rActivity == "craft item":
             pass
         elif rActivity == "cactus juice":
