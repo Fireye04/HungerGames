@@ -351,7 +351,7 @@ def hunts_food (player:Player):
     
     player.set_const(0.25)
 
-    if player.get_const() == stats.DEX:
+    if player.get_stat() == stats.DEX:
         if r.choice([True, True, True, False]):
             print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
             sponsorChance(player, 4)
@@ -363,7 +363,10 @@ def hunts_food (player:Player):
         if r.choice([True, False]):
             print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
             if weapon == "belt of grenades":
+                """ TENATIVE, NOT YET BEEN TESTED
                 player.get_items_enums().remove(item_directory.GRENADES)
+                """
+                pass
             sponsorChance(player, 4)
         else:
             print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
@@ -379,10 +382,12 @@ def randomEventManager ():
         pItems = player.get_items_enums()
 
         #checks for healing items and uses them by default.
+        """ COMMENTED OUT TEMPORARILY, CODE GIVING ERRORS
         for i in pItems:
             if i.get_type() == types.ASSIST:
                 player.set_const(i.get_ass())
                 pItems.remove(i)
+        """
 
         #checks for bladed items
         #for i in pItems:print(type(i))
@@ -424,10 +429,12 @@ def randomEventManager ():
         player_options.append("bear trap")
         #print(player_options)
         rActivity = r.choice(player_options)
+        print(f"{player}- {rActivity}")
         #rActivity = "cuts tree"
         if rActivity == "cuts tree":
             cuts_tree(player)
         elif rActivity == "hunts enemy":
+            # DO LATER
             pass
         elif rActivity == "hunts food":
             hunts_food(player)
