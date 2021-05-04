@@ -26,6 +26,7 @@ class Player(object):
         self.strong_stat = strong_stat
         self.npc = npc
         self.is_alive = True
+        self.has_crafted = False
     def get_name(self):
         return self.name
     def get_busy(self):
@@ -66,6 +67,8 @@ class Player(object):
     def set_alive (self, life):
         # life should be a bool
         self.is_alive = life
+    def get_crafted (self):
+        return self.has_crafted
         
 # remember to put in teams later
 class Team(object):
@@ -78,7 +81,7 @@ cornucopia_items = initialize_object_list([item_directory.MEDKIT, item_directory
 inner_cornucopia_items = initialize_object_list([item_directory.AWP, item_directory.GRENADES, item_directory.KATANA])
 all_items = cornucopia_items + inner_cornucopia_items
 
-craftableItems = initialize_object_list([item_directory.WOOD_SPEAR, item_directory.AXE, item_directory.STONE_SPEAR, item_directory.BOW])
+craftableItems = initialize_object_list([item_directory.WOOD_SPEAR, item_directory.HANDAXE, item_directory.STONE_SPEAR, item_directory.BOW])
 
 num_inner_cornucopia_items = 3
 player_options = []
@@ -344,8 +347,8 @@ def hunts_food (player:Player):
         weapon = "katana"
     if item_directory.BOW in p:
         weapon = "bow and arrows"
-    
-    player.set_const(0.25)
+
+    # GIVE THE PLAYER A MEAT ITEM IF THEY SUCCEED
 
     if player.get_stat() == stats.DEX:
         if r.choice([True, True, True, False]):
@@ -368,6 +371,9 @@ def hunts_food (player:Player):
             print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
             sponsorChance(player, 1)
 
+def craft_item (player:Player):
+    item = r.choice(craftableItems)
+    print(f"{player.get_name()} uses their supreme intellect to craft {item.__str__()}")
     
 
 def randomEventManager ():
@@ -389,9 +395,6 @@ def randomEventManager ():
         #for i in pItems:print(type(i))
         #for i in player.get_items_enums():print(type(i))
         
-        if item_directory.SWORD in pItems:
-            #CUTS TREE
-            player_options.append("cuts tree")
         if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems:
             #CUTS TREE
             player_options.append("cuts tree")
@@ -435,7 +438,7 @@ def randomEventManager ():
         elif rActivity == "hunts food":
             hunts_food(player)
         elif rActivity == "craft item":
-            pass
+            craft_item(player)
         elif rActivity == "cactus juice":
             pass
         elif rActivity == "snipe":
