@@ -307,7 +307,7 @@ def sponsorChance (player:Player, activityCoolness):
 
     x += activityCoolness
 
-    if x >= 18:
+    if x >= 19:
         # ITEMS REFERENCING EARLIER LIST AND NOT ENUM LIST
         print(f"{player.get_name()} was sent {r.choice(all_items)} by a mysterious sponsor.\n")
 
@@ -355,11 +355,11 @@ def hunts_food (player:Player):
     if player.get_stat() == stats.DEX:
         if r.choice([True, True, True, False]):
             print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
-            sponsorChance(player, 4)
+            sponsorChance(player, 3)
 
         else:
             print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
-            sponsorChance(player, 1)
+            sponsorChance(player, 0)
     else:
         if r.choice([True, False]):
             print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
@@ -368,24 +368,25 @@ def hunts_food (player:Player):
                 player.get_items_enums().remove(item_directory.GRENADES)
                 """
                 pass
-            sponsorChance(player, 4)
+            sponsorChance(player, 3)
         else:
             print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
-            sponsorChance(player, 1)
+            sponsorChance(player, 0)
 
 def craft_item (player:Player):
     item = r.choice(craftableItems)
-    print(f"{player.get_name()} uses their supreme intellect to craft {item.__str__()}")
+    print(f"{player.get_name()} uses their supreme intellect to craft {item.__str__()}\n")
     player.set_crafted(True)
 
     sponsorChance(player, 2)
     
 def cactus_juice  (player:Player):
-    print(f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!', and become delusional for about 30 minutes")
+    print(f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!', and become delusional for about 30 minutes\n")
     player.set_const(-.25)
 
     sponsorChance(player, 3)
     
+##############SAVING FOR LATER###################
 """
 def snipe (player):
     p = player.get_items_enums()
@@ -415,7 +416,41 @@ def snipe (player):
             print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
             sponsorChance(player, 1)
 
+
+
+
+def grenade_trap (player:Player):
+    print(f"")
 """
+##############SAVING FOR LATER###################
+
+def water (player:Player):
+
+    if r.choice([True, False]):
+        print(f"{player.get_name()} searches for a water source and is successful.\n")
+        player.set_const(0.5)
+        sponsorChance(player, 2)
+    else:
+        print(f"{player.get_name()} searches for a water source, however is unable to find one.\n")
+        sponsorChance(player, -1)
+
+def bear_trap(player:Player):
+    if player.get_stat() == stats.DEX:
+        if r.choice([True, True, True, False]):
+            print(f"{player.get_name()} almost falls into a bear trap, however manages to dodge out of the way before falling in\n")
+            sponsorChance(player, 2)
+        else:
+            print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
+            player.set_const(-0.5)
+            sponsorChance(player, 2)
+    else:
+        if r.choice([True, False]):
+            print(f"{player.get_name()} almost falls into a bear trap, however manages to dodge out of the way before falling in\n")
+            sponsorChance(player, 2)
+        else:
+            print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
+            player.set_const(-0.5)
+            sponsorChance(player, 2)        
 
 def randomEventManager ():
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
@@ -470,7 +505,8 @@ def randomEventManager ():
         #print(player_options)
         rActivity = r.choice(player_options)
         print(f"{player}- {rActivity}")
-        #rActivity = "cuts tree"
+        
+        # HEYO IM SKIPPING THE ONES THAT REFERENCE OTHER PLAYERS COS IDK EXACTLY HOW TO DO THAT. ACTIVITIES LABELED 'DO LATER' OR 'SAVING FOR LATER' INCLUDE A REFERENCE TO ANOTHER CHARACTER
         if rActivity == "cuts tree":
             cuts_tree(player)
         elif rActivity == "hunts enemy":
@@ -483,13 +519,15 @@ def randomEventManager ():
         elif rActivity == "cactus juice":
             cactus_juice(player)
         elif rActivity == "snipe":
-            snipe(player)
+            #DO LATER
+            pass
         elif rActivity == "grenade trap":
+            #DO LATER
             pass
         elif rActivity == "water":
-            pass
+            water(player)
         elif rActivity == "bear trap":
-            pass
+            bear_trap(player)
         
         player_options.clear()
         
