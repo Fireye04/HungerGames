@@ -69,6 +69,8 @@ class Player(object):
         self.is_alive = life
     def get_crafted (self):
         return self.has_crafted
+    def set_crafted (self, crafted):
+        self.has_crafted = crafted
         
 # remember to put in teams later
 class Team(object):
@@ -374,7 +376,46 @@ def hunts_food (player:Player):
 def craft_item (player:Player):
     item = r.choice(craftableItems)
     print(f"{player.get_name()} uses their supreme intellect to craft {item.__str__()}")
+    player.set_crafted(True)
+
+    sponsorChance(player, 2)
     
+def cactus_juice  (player:Player):
+    print(f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!', and become delusional for about 30 minutes")
+    player.set_const(-.25)
+
+    sponsorChance(player, 3)
+    
+"""
+def snipe (player):
+    p = player.get_items_enums()
+    if item_directory.BOW in p:
+        weapon = "bow and arrows"
+    if item_directory.AWP in p:
+        weapon = "AWP"
+
+
+    if player.get_stat() == stats.DEX:
+        if r.choice([True, True, True, False]):
+            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
+            sponsorChance(player, 4)
+
+        else:
+            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
+            sponsorChance(player, 1)
+    else:
+        if r.choice([True, False]):
+            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
+            if weapon == "belt of grenades":
+                 #TENATIVE, NOT YET BEEN TESTED
+                #player.get_items_enums().remove(item_directory.GRENADES)
+                pass
+            sponsorChance(player, 4)
+        else:
+            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
+            sponsorChance(player, 1)
+
+"""
 
 def randomEventManager ():
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
@@ -407,7 +448,7 @@ def randomEventManager ():
             player_options.append("hunts food")
         
         #checks for wisdom
-        if player.get_stat() == stats.WIS:
+        if player.get_stat() == stats.WIS and player.get_crafted() == False:
             #craft item
             player_options.append("craft item")
 
@@ -440,9 +481,9 @@ def randomEventManager ():
         elif rActivity == "craft item":
             craft_item(player)
         elif rActivity == "cactus juice":
-            pass
+            cactus_juice(player)
         elif rActivity == "snipe":
-            pass
+            snipe(player)
         elif rActivity == "grenade trap":
             pass
         elif rActivity == "water":
