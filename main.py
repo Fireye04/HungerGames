@@ -83,6 +83,8 @@ cornucopia_items = initialize_object_list([item_directory.MEDKIT, item_directory
 inner_cornucopia_items = initialize_object_list([item_directory.AWP, item_directory.GRENADES, item_directory.KATANA])
 all_items = cornucopia_items + inner_cornucopia_items
 
+sponsor_items = cornucopia_items + cornucopia_items + inner_cornucopia_items
+
 craftableItems = initialize_object_list([item_directory.WOOD_SPEAR, item_directory.HANDAXE, item_directory.STONE_SPEAR, item_directory.BOW])
 
 num_inner_cornucopia_items = 3
@@ -309,7 +311,7 @@ def sponsorChance (player:Player, activityCoolness):
 
     if x >= 19:
         # ITEMS REFERENCING EARLIER LIST AND NOT ENUM LIST
-        print(f"{player.get_name()} was sent {r.choice(all_items)} by a mysterious sponsor.\n")
+        print(f"{player.get_name()} was sent {r.choice(sponsor_items)} by a mysterious sponsor.\n")
 
 
 def cuts_tree (player:Player):
