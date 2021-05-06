@@ -298,6 +298,11 @@ def corn_fights2():
         if p_winner != None:
             pass
 
+def died (player:Player, deathReason):
+    players.remove(player)
+    dead.append(player)
+    print(f"{player.get_name()} died from {deathReason}.\n")
+
 def sponsorChance (player:Player, activityCoolness):
     #rolls a D20 at advantege if charisma, and adds coolness mod  to the roll
 
@@ -383,10 +388,12 @@ def craft_item (player:Player):
     sponsorChance(player, 2)
     
 def cactus_juice  (player:Player):
-    print(f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!', and become delusional for about 30 minutes\n")
+    print(f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!'\n")
     player.set_const(-.25)
-
-    sponsorChance(player, 3)
+    if player.get_const() <= 0:
+        died(player, "drinking cactus juice")
+    else:
+        sponsorChance(player, 3)
     
 ##############SAVING FOR LATER###################
 """
@@ -444,7 +451,10 @@ def bear_trap(player:Player):
         else:
             print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
             player.set_const(-0.5)
-            sponsorChance(player, 2)
+            if player.get_const() <= 0:
+                died(player, "a bear trap")
+            else:
+                sponsorChance(player, 2)
     else:
         if r.choice([True, False]):
             print(f"{player.get_name()} almost falls into a bear trap, however manages to dodge out of the way before falling in\n")
@@ -452,7 +462,10 @@ def bear_trap(player:Player):
         else:
             print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
             player.set_const(-0.5)
-            sponsorChance(player, 2)        
+            if player.get_const() <= 0:
+                died(player, "a bear trap")
+            else:
+                sponsorChance(player, 2)       
 
 def randomEventManager ():
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
@@ -506,7 +519,7 @@ def randomEventManager ():
         player_options.append("bear trap")
         #print(player_options)
         rActivity = r.choice(player_options)
-        print(f"{player}- {rActivity}")
+       # print(f"{player}- {rActivity}")
         
         # HEYO IM SKIPPING THE ONES THAT REFERENCE OTHER PLAYERS COS IDK EXACTLY HOW TO DO THAT. ACTIVITIES LABELED 'DO LATER' OR 'SAVING FOR LATER' INCLUDE A REFERENCE TO ANOTHER CHARACTER
         if rActivity == "cuts tree":
@@ -559,6 +572,12 @@ def gameManager ():
     corn_fights()
 
     cannons()
+
+    randomEventManager()
+
+    randomEventManager()
+
+    randomEventManager()
 
     randomEventManager()
 
