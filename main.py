@@ -301,7 +301,7 @@ def corn_fights2():
 def died (player:Player, deathReason):
     players.remove(player)
     dead.append(player)
-    print(f"{player.get_name()} died from {deathReason}.\n")
+    print(f"{player.get_name()} died from {deathReason}.\n\n")
 
 def sponsorChance (player:Player, activityCoolness):
     #rolls a D20 at advantege if charisma, and adds coolness mod  to the roll
@@ -316,7 +316,9 @@ def sponsorChance (player:Player, activityCoolness):
 
     if x >= 19:
         # ITEMS REFERENCING EARLIER LIST AND NOT ENUM LIST
-        print(f"{player.get_name()} was sent {r.choice(sponsor_items)} by a mysterious sponsor.\n")
+        print(f"{player.get_name()} was sent {r.choice(sponsor_items)} by a mysterious sponsor.\n\n")
+    else:
+        print("")
 
 
 def cuts_tree (player:Player):
@@ -389,7 +391,7 @@ def craft_item (player:Player):
     
 def cactus_juice  (player:Player):
     print(f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!'\n")
-    player.set_const(-.25)
+    player.set_const(-.1)
     if player.get_const() <= 0:
         died(player, "drinking cactus juice")
     else:
@@ -563,6 +565,11 @@ def cannons ():
     else:
         print(f"As night falls, the cannon remains silent.\n")
 
+def corn_feast ():
+    remP = len(players)
+    print(f"an annoncement is sent out to the remaining tributes: There are {remP} tributes remaining. We invite them all to return to the cornucopia for new items and resources. good day.")
+
+    
 
 def gameManager ():
     game_initialize()
@@ -573,14 +580,12 @@ def gameManager ():
 
     cannons()
 
-    randomEventManager()
+    while len(players) > 10:
+        randomEventManager()
 
-    randomEventManager()
+        cannons
 
-    randomEventManager()
-
-    randomEventManager()
-
+    corn_feast()
 
 gameManager()
 
