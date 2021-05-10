@@ -94,6 +94,9 @@ by_corn = []
 dead = []
 players = []
 is_running = []
+
+is_goingToFeast = []
+
 def game_initialize():
     for index, i in enumerate(Names):
         player = Player(i, 1, s_stats[index], False)
@@ -120,6 +123,10 @@ def game_initialize():
                     at_corn.append(player)
                     #forced to fight in cornucopia
 
+def died (player:Player, deathReason):
+    players.remove(player)
+    dead.append(player)
+    print(f"{player.get_name()} died from {deathReason}.\n\n")
 
 def fight(player1:Player, player2:Player):
     #fight function. It just runs based on d20 rolls
@@ -174,6 +181,85 @@ def fight(player1:Player, player2:Player):
             player2.set_const(-0.1)
         else:
             player2.set_const(-0.25)
+        #nobody wins
+        return None
+
+def feastFight(player1:Player, player2:Player):
+    #fight function. It just runs based on d20 rolls
+    print(player1)
+
+    fight_const_x = gen_fight_const(player1)
+    fight_const_y = gen_fight_const(player2)
+    if fight_const_x>fight_const_y:
+        if player2.get_stat() == stats.CHA:
+            player2.set_const(-0.5)
+            if player2.get_const() <= 0:
+                died(player2, f"fighting {player1}")
+            else:
+                print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
+                is_goingToFeast.remove(player2)
+        elif player2.get_stat() == stats.CON:
+            player2.set_const(-0.5)
+            if player2.get_const() <= 0:
+                died(player2, f"fighting {player1}")
+            else:
+                print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
+                is_goingToFeast.remove(player2)
+        else:
+            players.remove(player2)
+            dead.append(player2)
+            print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
+        #player one wins
+        return player1
+    if fight_const_y>fight_const_x:
+        if player1.get_stat() != stats.CHA:
+            player1.set_const(-0.5)
+            if player1.get_const() <= 0:
+                died(player1, f"fighting {player2}")
+            else:
+                print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
+                is_goingToFeast.remove(player1)
+        elif player1.get_stat == stats.CON:
+            player1.set_const(-0.5)
+            if player1.get_const() <= 0:
+                died(player1, f"fighting {player2}")
+            else:
+                print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
+                is_goingToFeast.remove(player1)
+        else:
+            players.remove(player1)
+            dead.append(player1)
+            #player 2 wins
+            print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()}.\n")
+        return player2
+    if fight_const_x==fight_const_y:
+        
+        if player1.get_stat() == stats.CON:
+            player1.set_const(-0.1)
+        elif player2.get_stat() == stats.CHA:
+            player2.set_const(-0.1)
+        else:
+            player1.set_const(-0.25)
+        
+
+        
+        if player2.get_stat() == stats.CON:
+            player2.set_const(-0.1)
+        elif player2.get_stat() == stats.CHA:
+            player2.set_const(-0.1)
+        else:
+            player2.set_const(-0.25)
+
+        if player1.get_const() <= 0:
+                died(player1, f"fighting {player2}")
+        
+        if player2.get_const() <= 0:
+                died(player2, f"fighting {player1}")
+
+        if player1.get_const() > 0 and player2.get_const() > 0:
+            print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed.\n")
+
+        
         #nobody wins
         return None
 
@@ -298,10 +384,7 @@ def corn_fights2():
         if p_winner != None:
             pass
 
-def died (player:Player, deathReason):
-    players.remove(player)
-    dead.append(player)
-    print(f"{player.get_name()} died from {deathReason}.\n\n")
+
 
 def sponsorChance (player:Player, activityCoolness):
     #rolls a D20 at advantege if charisma, and adds coolness mod  to the roll
@@ -477,12 +560,12 @@ def randomEventManager ():
         pItems = player.get_items_enums()
 
         #checks for healing items and uses them by default.
-        """ COMMENTED OUT TEMPORARILY, CODE GIVING ERRORS
-        for i in pItems:
-            if i.get_type() == types.ASSIST:
-                player.set_const(i.get_ass())
-                pItems.remove(i)
-        """
+        # COMMENTED OUT TEMPORARILY, CODE GIVING ERRORS
+        #for i in pItems:
+            #if item.get_type() == i.types.ASSIST:
+            #    player.set_const(i.get_ass())
+            #    pItems.remove(i)
+        
 
         #checks for bladed items
         #for i in pItems:print(type(i))
@@ -552,24 +635,105 @@ def randomEventManager ():
 
 
 def cannons ():
-    if len(dead) > 0:
-        print(f"As night falls, the cannon fires {len(dead)} times.\n")
-        print(f"The images of the following tributes flash in the sky:\n")
-        for tribute in dead:   
-            print(tribute.get_name() + "\n")
-        dead.clear()
-    elif len(dead) == 1:
-        print(f"As night falls, the cannon fires 1 time.\n")
-        print(f"The image of {tribute.get_name()} flashes in the sky.\n")
-        dead.clear()
+    if len(players) <= 10:
+        if len(dead) > 1:
+            print(f"As night falls, the cannon fires {len(dead)} times.\n")
+            print(f"The images of the following tributes flash in the sky:\n")
+            for tribute in dead:   
+                print(tribute.get_name() + "\n")
+            dead.clear()
+        elif len(dead) == 1:
+            print(f"As night falls, the cannon fires 1 time.\n")
+            print(f"The image of {dead[0].get_name()} flashes in the sky.\n")
+            dead.clear()
+        else:
+            print(f"As night falls, the cannon remains silent.\n")
+        print(f"{len(players)} tributes remain.")
     else:
-        print(f"As night falls, the cannon remains silent.\n")
+        if len(dead) > 1:
+            print(f"As night falls, the cannon fires {len(dead)} times.\n")
+            print(f"The images of the following tributes flash in the sky:\n")
+            for tribute in dead:   
+                print(tribute.get_name() + "\n")
+            dead.clear()
+        elif len(dead) == 1:
+            print(f"As night falls, the cannon fires 1 time.\n")
+            print(f"The image of {dead[0].get_name()} flashes in the sky.\n")
+            dead.clear()
+        else:
+            print(f"As night falls, the cannon remains silent.\n")
+
+def checkDex (p):
+    if len(is_goingToFeast) > 1:
+        if p.get_stat() == stats.DEX:
+            print(f"{p} sneaks into the cornucopia and escapes with {r.choice(all_items)}")
+            # is_goingToFeast.remove(p)
+            np = r.choice(is_goingToFeast)
+            checkDex(np)
+        else:
+            return p
+    else:
+        return 0
+
+
+def atFeast ():
+    p1 = r.choice(is_goingToFeast)
+    p2 = r.choice(is_goingToFeast)
+
+    p1 = checkDex(p1)
+
+    p2 = checkDex(p2)
+
+    if p1 == 0 or p2 == 0 or p1 == None or p2 == None:
+        print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
+        
+        is_goingToFeast[0].set_const(1)
+        for i in range(len(cornucopia_items)):
+            is_goingToFeast[0].give_item(cornucopia_items[i])
+        is_goingToFeast.clear()
+        return 0
+    else:
+
+        corn_winner = feastFight(p1, p2)
+        return corn_winner
+
 
 def corn_feast ():
     remP = len(players)
-    print(f"an annoncement is sent out to the remaining tributes: There are {remP} tributes remaining. We invite them all to return to the cornucopia for new items and resources. good day.")
+    print(f"An announcement is sent out to the remaining tributes: There are {remP} tributes remaining. We invite them all to return to the cornucopia for new items and resources. The remaining tributes are as follows:\n")
+    for i in range(len(players)):
+        print(f"{players[i]}\n")
 
-    
+
+    for index, player in enumerate(players):
+        if player.get_stat() == stats.WIS:
+            if r.choice([True, False, False]):
+                is_goingToFeast.append(player)
+        else:
+            if r.choice([True, False]):
+                is_goingToFeast.append(player)
+
+    print(f"Of the remaining {remP} tributes, {len(is_goingToFeast)} show up to the feast.\n")
+
+    if len(is_goingToFeast) > 1:
+        while len(is_goingToFeast) >= 2:
+            fWinner = atFeast()
+        if fWinner != 0:
+            print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
+        
+            is_goingToFeast[0].set_const(1)
+            for i in range(len(cornucopia_items)):
+                is_goingToFeast[0].give_item(cornucopia_items[i])
+        
+    else:
+        print(f"Of the remaining {remP} tributes, only {is_goingToFeast[0]} shows up to the feast. They loot everything, grab a snack, and finally venture back out into the arena.\n")
+        
+        is_goingToFeast[0].set_const(1)
+        for i in range(len(cornucopia_items)):
+            is_goingToFeast[0].give_item(cornucopia_items[i])
+
+
+
 
 def gameManager ():
     game_initialize()
@@ -578,14 +742,33 @@ def gameManager ():
 
     corn_fights()
 
+    print("-----------------------\n")
+
     cannons()
+
+    print("-----------------------\n")
 
     while len(players) > 10:
         randomEventManager()
 
-        cannons
+        print("-----------------------\n")
+
+        cannons()
+
+        print("-----------------------\n")
 
     corn_feast()
+
+    print("-----------------------\n")
+
+    #while len(players) > 1:
+        #randomEventManager()
+
+        #print("-----------------------\n")
+
+        #cannons()
+
+        #print("-----------------------\n")
 
 gameManager()
 
