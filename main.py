@@ -144,7 +144,7 @@ def fight(player1:Player, player2:Player):
             is_running.append(player2)
             player2.set_const(-0.5)
         else:
-            players.remove(player2)
+
             dead.append(player2)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
         #player one wins
@@ -186,7 +186,7 @@ def fight(player1:Player, player2:Player):
 
 def feastFight(player1:Player, player2:Player):
     #fight function. It just runs based on d20 rolls
-    print(player1)
+    # print(player1)
 
     fight_const_x = gen_fight_const(player1)
     fight_const_y = gen_fight_const(player2)
@@ -666,8 +666,8 @@ def cannons ():
 def checkDex (p):
     if len(is_goingToFeast) > 1:
         if p.get_stat() == stats.DEX:
-            print(f"{p} sneaks into the cornucopia and escapes with {r.choice(all_items)}")
-            # is_goingToFeast.remove(p)
+            print(f"{p} sneaks into the cornucopia and escapes with {r.choice(all_items)}\n")
+            is_goingToFeast.remove(p)
             np = r.choice(is_goingToFeast)
             checkDex(np)
         else:
@@ -683,6 +683,9 @@ def atFeast ():
     p1 = checkDex(p1)
 
     p2 = checkDex(p2)
+    
+    while p2 == p1:
+        p2 = checkDex(p2)
 
     if p1 == 0 or p2 == 0 or p1 == None or p2 == None:
         print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
@@ -713,7 +716,13 @@ def corn_feast ():
             if r.choice([True, False]):
                 is_goingToFeast.append(player)
 
-    print(f"Of the remaining {remP} tributes, {len(is_goingToFeast)} show up to the feast.\n")
+    print("-----------------------\n")
+
+    print(f"Of the remaining {remP} tributes, {len(is_goingToFeast)} show up to the feast:\n")
+    for i in range(len(is_goingToFeast)):
+        print(f"{is_goingToFeast[i]}\n")
+
+    print("-----------------------\n")
 
     if len(is_goingToFeast) > 1:
         while len(is_goingToFeast) >= 2:
