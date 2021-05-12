@@ -664,6 +664,7 @@ def cannons ():
             print(f"As night falls, the cannon remains silent.\n")
 
 def checkDex (p):
+    print(p)
     if len(is_goingToFeast) > 1:
         if p.get_stat() == stats.DEX:
             print(f"{p} sneaks into the cornucopia and escapes with {r.choice(all_items)}\n")
@@ -677,6 +678,9 @@ def checkDex (p):
 
 
 def atFeast ():
+    # select tributes for atFeast before it is called
+
+    print("atFeast")
     p1 = r.choice(is_goingToFeast)
     p2 = r.choice(is_goingToFeast)
 
@@ -684,10 +688,10 @@ def atFeast ():
 
     p2 = checkDex(p2)
     
-    while p2 == p1:
+    while p2 == p1 and p2 != 0 and p1 != 0:
         p2 = checkDex(p2)
 
-    if p1 == 0 or p2 == 0 or p1 == None or p2 == None:
+    if p1 == 0 or p2 == 0 or p1 == None or p2 == None or p1 == p2:
         print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
         
         is_goingToFeast[0].set_const(1)
@@ -725,7 +729,7 @@ def corn_feast ():
     print("-----------------------\n")
 
     if len(is_goingToFeast) > 1:
-        while len(is_goingToFeast) >= 2:
+        while len(is_goingToFeast) > 1:
             fWinner = atFeast()
         if fWinner != 0:
             print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
