@@ -209,6 +209,7 @@ def feastFight(player1:Player, player2:Player):
             players.remove(player2)
             dead.append(player2)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
+            is_goingToFeast.remove(player2)
         #player one wins
         return player1
     if fight_const_y>fight_const_x:
@@ -231,6 +232,7 @@ def feastFight(player1:Player, player2:Player):
             dead.append(player1)
             #player 2 wins
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()}.\n")
+            is_goingToFeast.remove(player2)
         return player2
     if fight_const_x==fight_const_y:
         
@@ -251,13 +253,16 @@ def feastFight(player1:Player, player2:Player):
             player2.set_const(-0.25)
 
         if player1.get_const() <= 0:
-                died(player1, f"fighting {player2}")
+            is_goingToFeast.remove(player2)
+            died(player1, f"fighting {player2}")
+                
         
         if player2.get_const() <= 0:
-                died(player2, f"fighting {player1}")
+            is_goingToFeast.remove(player2)
+            died(player2, f"fighting {player1}")
 
         if player1.get_const() > 0 and player2.get_const() > 0:
-            print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed.\n")
+            print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed. Both remain at the feast.\n")
 
         
         #nobody wins
@@ -663,55 +668,25 @@ def cannons ():
         else:
             print(f"As night falls, the cannon remains silent.\n")
 
-def checkDex (p):
-    print(p)
-    if len(is_goingToFeast) > 1:
-        if p.get_stat() == stats.DEX:
-            print(f"{p} sneaks into the cornucopia and escapes with {r.choice(all_items)}\n")
-            is_goingToFeast.remove(p)
-            np = r.choice(is_goingToFeast)
-            checkDex(np)
-        else:
-            return p
+
+
+def checkEqual (p1:Player, p2:Player):
+    if p1 == p2:
+        p2 = r.choice(is_goingToFeast)
+        checkEqual(p1, p2)
     else:
-        return 0
-
-
-def atFeast ():
-    # select tributes for atFeast before it is called
-
-    print("atFeast")
-    p1 = r.choice(is_goingToFeast)
-    p2 = r.choice(is_goingToFeast)
-
-    p1 = checkDex(p1)
-
-    p2 = checkDex(p2)
-    
-    while p2 == p1 and p2 != 0 and p1 != 0:
-        p2 = checkDex(p2)
-
-    if p1 == 0 or p2 == 0 or p1 == None or p2 == None or p1 == p2:
-        print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
-        
-        is_goingToFeast[0].set_const(1)
-        for i in range(len(cornucopia_items)):
-            is_goingToFeast[0].give_item(cornucopia_items[i])
-        is_goingToFeast.clear()
-        return 0
-    else:
-
-        corn_winner = feastFight(p1, p2)
-        return corn_winner
-
+        return p2
 
 def corn_feast ():
     remP = len(players)
     print(f"An announcement is sent out to the remaining tributes: There are {remP} tributes remaining. We invite them all to return to the cornucopia for new items and resources. The remaining tributes are as follows:\n")
     for i in range(len(players)):
-        print(f"{players[i]}\n")
+        print(f"{players[i]}")
+    print("")
 
-
+    # chooses which players go to the feast
+    # error occuring as players are becoming NoneType when get_stat() is called in gen_fight_const().
+    #############HELP#ME###################
     for index, player in enumerate(players):
         if player.get_stat() == stats.WIS:
             if r.choice([True, False, False]):
@@ -719,32 +694,39 @@ def corn_feast ():
         else:
             if r.choice([True, False]):
                 is_goingToFeast.append(player)
+    #############HELP#ME###################
 
     print("-----------------------\n")
 
+    # returns which players are going to the feast
     print(f"Of the remaining {remP} tributes, {len(is_goingToFeast)} show up to the feast:\n")
     for i in range(len(is_goingToFeast)):
-        print(f"{is_goingToFeast[i]}\n")
+        print(f"{is_goingToFeast[i]}")
+    print("")
 
     print("-----------------------\n")
+    for member in is_goingToFeast:
+        if member.get_stat() == stats.DEX:
+            stolenItem = r.choice(all_items)
+            print(f"{member.get_name()} sneaks into the cornucopia and escapes with {stolenItem}\n")
+            member.give_item(stolenItem)
+            is_goingToFeast.remove(member)
+    while len(is_goingToFeast) >= 2:
+        p1 = r.choice(is_goingToFeast)
+        p2 = r.choice(is_goingToFeast)
+        
+        if p2 == p1 and len(is_goingToFeast) >= 2:
+            p2 = checkEqual(p1, p2)
+            
+        if p2 != p1:
+            feastFight(p1, p2)
 
-    if len(is_goingToFeast) > 1:
-        while len(is_goingToFeast) > 1:
-            fWinner = atFeast()
-        if fWinner != 0:
-            print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
-        
-            is_goingToFeast[0].set_const(1)
-            for i in range(len(cornucopia_items)):
-                is_goingToFeast[0].give_item(cornucopia_items[i])
-        
-    else:
-        print(f"Of the remaining {remP} tributes, only {is_goingToFeast[0]} shows up to the feast. They loot everything, grab a snack, and finally venture back out into the arena.\n")
-        
+    if len(is_goingToFeast) == 1:
+        print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
         is_goingToFeast[0].set_const(1)
         for i in range(len(cornucopia_items)):
             is_goingToFeast[0].give_item(cornucopia_items[i])
-
+            is_goingToFeast.clear()
 
 
 
@@ -772,7 +754,7 @@ def gameManager ():
 
     corn_feast()
 
-    print("-----------------------\n")
+    #print("-----------------------\n")
 
     #while len(players) > 1:
         #randomEventManager()
