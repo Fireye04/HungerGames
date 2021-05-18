@@ -176,14 +176,14 @@ def fight(player1:Player, player2:Player):
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
         
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
         #nobody wins
         return None
 
@@ -247,14 +247,14 @@ def feastFight(player1:Player, player2:Player):
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
         
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
 
         # NOTE THIS FOLLOWING STATEMENT HAS NOT BEEN TESTED AND COULD JUST KILL ONE WHILE THE OTHER LIVES EVEN WITH THE 0 CONSTANT
 
@@ -286,7 +286,7 @@ def item_fight(player1:Player, player2:Player, item):
             print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but spared {player2.get_name()}'s life. {player1.get_name()} Then runs away into the arena.\n")
             is_running.append(player1)
         elif player2.get_stat() == stats.CON:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} Then runs away into the arena.\n")
             is_running.append(player1)
         else:
@@ -299,7 +299,7 @@ def item_fight(player1:Player, player2:Player, item):
         return player1
     if fight_const_y>fight_const_x:
         if player1.get_stat() != stats.CHA:
-            player1.set_const(-0.7)
+            player1.set_const(-0.5)
             print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but spared {player1.get_name()}'s life. {player2.get_name()} Then runs away into the arena.\n")
             is_running.append(player2)
             is_running.append(player2)
@@ -330,14 +330,14 @@ def item_fight(player1:Player, player2:Player, item):
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
         
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
         #nobody wins
         return None
 
@@ -424,7 +424,7 @@ def cuts_tree (player:Player):
         tool = "axe"
     print(f"{player.get_name()} cuts down a tree wth their {tool} and builds a fire with the lumber.\n")
 
-    player.set_const(0.5)
+    player.set_const(0.3)
 
     sponsorChance(player, 1)
 
@@ -533,7 +533,7 @@ def water (player:Player):
 
     if r.choice([True, False]):
         print(f"{player.get_name()} searches for a water source and is successful.\n")
-        player.set_const(0.7)
+        player.set_const(0.3)
         sponsorChance(player, 2)
     else:
         print(f"{player.get_name()} searches for a water source, however is unable to find one.\n")
