@@ -139,13 +139,13 @@ def fight(player1:Player, player2:Player):
     fight_const_y = gen_fight_const(player2)
     if fight_const_x>fight_const_y:
         if player2.get_stat() == stats.CHA:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player2)
         elif player2.get_stat() == stats.CON:
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player2)
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
         else:
 
             dead.append(player2)
@@ -156,11 +156,11 @@ def fight(player1:Player, player2:Player):
         if player1.get_stat() != stats.CHA:
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player1)
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
         elif player1.get_stat == stats.CON:
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
             is_running.append(player1)
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
         else:
             players.remove(player1)
             dead.append(player1)
@@ -172,18 +172,18 @@ def fight(player1:Player, player2:Player):
         print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed.\n")
 
         if player1.get_stat() == stats.CON:
-            player1.set_const(-0.1)
+            player1.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         else:
-            player1.set_const(-0.25)
+            player1.set_const(-0.5)
         
         if player2.get_stat() == stats.CON:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         else:
-            player2.set_const(-0.25)
+            player2.set_const(-0.5)
         #nobody wins
         return None
 
@@ -195,7 +195,7 @@ def feastFight(player1:Player, player2:Player):
     fight_const_y = gen_fight_const(player2)
     if fight_const_x>fight_const_y:
         if player2.get_stat() == stats.CHA:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
             if player2.get_const() <= 0:
                 is_goingToFeast.remove(player2)
                 return died(player2, f"fighting {player1}")
@@ -204,7 +204,7 @@ def feastFight(player1:Player, player2:Player):
                 print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player2)
         elif player2.get_stat() == stats.CON:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
             if player2.get_const() <= 0:
                 return died(player2, f"fighting {player1}")
             else:
@@ -219,7 +219,7 @@ def feastFight(player1:Player, player2:Player):
         return player1
     if fight_const_y>fight_const_x:
         if player1.get_stat() != stats.CHA:
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
             if player1.get_const() <= 0:
                 is_goingToFeast.remove(player1)
                 return died(player1, f"fighting {player2}")
@@ -227,7 +227,7 @@ def feastFight(player1:Player, player2:Player):
                 print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player1)
         elif player1.get_stat == stats.CON:
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
             if player1.get_const() <= 0:
                 return died(player1, f"fighting {player2}")
             else:
@@ -243,18 +243,18 @@ def feastFight(player1:Player, player2:Player):
     if fight_const_x==fight_const_y:
         
         if player1.get_stat() == stats.CON:
-            player1.set_const(-0.1)
+            player1.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         else:
-            player1.set_const(-0.25)
+            player1.set_const(-0.5)
         
         if player2.get_stat() == stats.CON:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         else:
-            player2.set_const(-0.25)
+            player2.set_const(-0.5)
 
         # NOTE THIS FOLLOWING STATEMENT HAS NOT BEEN TESTED AND COULD JUST KILL ONE WHILE THE OTHER LIVES EVEN WITH THE 0 CONSTANT
 
@@ -282,11 +282,11 @@ def item_fight(player1:Player, player2:Player, item):
     fight_const_y = gen_fight_const(player2)
     if fight_const_x>fight_const_y:
         if player2.get_stat() == stats.CHA:
-            player2.set_const(-0.5)
+            player2.set_const(-0.7)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but spared {player2.get_name()}'s life. {player1.get_name()} Then runs away into the arena.\n")
             is_running.append(player1)
         elif player2.get_stat() == stats.CON:
-            player2.set_const(-0.25)
+            player2.set_const(-0.5)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} Then runs away into the arena.\n")
             is_running.append(player1)
         else:
@@ -299,12 +299,12 @@ def item_fight(player1:Player, player2:Player, item):
         return player1
     if fight_const_y>fight_const_x:
         if player1.get_stat() != stats.CHA:
-            player1.set_const(-0.5)
+            player1.set_const(-0.7)
             print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but spared {player1.get_name()}'s life. {player2.get_name()} Then runs away into the arena.\n")
             is_running.append(player2)
             is_running.append(player2)
         elif player1.get_stat == stats.CON:
-            player1.set_const(-0.25)
+            player1.set_const(-0.5)
             print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but {player1.get_name()} managed to survive the attack due to their high constitution.{player2.get_name()} Then runs away into the arena.\n")
             is_running.append(player2)
         else:
@@ -326,18 +326,18 @@ def item_fight(player1:Player, player2:Player, item):
         is_running.append(player2)
         is_running.append(player1)
         if player1.get_stat() == stats.CON:
-            player1.set_const(-0.1)
+            player1.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         else:
-            player1.set_const(-0.25)
+            player1.set_const(-0.5)
         
         if player2.get_stat() == stats.CON:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
-            player2.set_const(-0.1)
+            player2.set_const(-0.5)
         else:
-            player2.set_const(-0.25)
+            player2.set_const(-0.5)
         #nobody wins
         return None
 
@@ -407,7 +407,7 @@ def sponsorChance (player:Player, activityCoolness):
 
     x += activityCoolness
 
-    if x >= 19:
+    if x >= 20:
         # ITEMS REFERENCING EARLIER LIST AND NOT ENUM LIST
         print(f"{player.get_name()} was sent {r.choice(sponsor_items)} by a mysterious sponsor.\n\n")
     else:
@@ -424,7 +424,7 @@ def cuts_tree (player:Player):
         tool = "axe"
     print(f"{player.get_name()} cuts down a tree wth their {tool} and builds a fire with the lumber.\n")
 
-    player.set_const(0.25)
+    player.set_const(0.5)
 
     sponsorChance(player, 1)
 
@@ -533,7 +533,7 @@ def water (player:Player):
 
     if r.choice([True, False]):
         print(f"{player.get_name()} searches for a water source and is successful.\n")
-        player.set_const(0.5)
+        player.set_const(0.7)
         sponsorChance(player, 2)
     else:
         print(f"{player.get_name()} searches for a water source, however is unable to find one.\n")
@@ -546,7 +546,7 @@ def bear_trap(player:Player):
             sponsorChance(player, 2)
         else:
             print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
-            player.set_const(-0.5)
+            player.set_const(-0.7)
             if player.get_const() <= 0:
                 died(player, "a bear trap")
             else:
@@ -557,7 +557,7 @@ def bear_trap(player:Player):
             sponsorChance(player, 2)
         else:
             print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
-            player.set_const(-0.5)
+            player.set_const(-0.7)
             if player.get_const() <= 0:
                 died(player, "a bear trap")
             else:
@@ -758,12 +758,16 @@ def gameManager ():
     game_initialize()
 
     corn_fights2()
-
+    
     corn_fights()
 
     print("-----------------------\n")
 
     cannons()
+
+    print("-----------------------\n")
+
+    input("Enter to continue:")
 
     print("-----------------------\n")
 
@@ -776,8 +780,13 @@ def gameManager ():
 
         print("-----------------------\n")
 
+        input("Enter to continue:")
+
+        print("-----------------------\n")
+
+
     corn_feast()
-    """
+    """ NOT WORKING
     while len(players) > 1:
         print("-----------------------\n")
 
@@ -811,20 +820,20 @@ gameManager()
 if they have a weapon- <name> hunts for food with <weapon> and is/isn't successful,
 <name> hunts down <another tribute> and succeeds/fails at killing them. (run fight)
 
-if they have a bladed weapon (knife, sword, axe)- <name> cuts down a tree and uses the wood for a fire. (+0.25 survival mod)
+if they have a bladed weapon (knife, sword, axe)- <name> cuts down a tree and uses the wood for a fire. (+0.5 survival mod)
 
 if they don't have a weapon, but have wisdom- <name> crafts <homemade weapon> with natural resources they found laying around.
 
 if they have dexterity- <name> manages to yoink <enemy tribute>'s <item>
 
-if they don't have wisdom- <name> cuts open a cactus and drinks the juice. They immediately say "Drink cactus juice. I'll quench ya. nothing's quenchier. it's the quenchiest." and become temporarily delusional. (-0.25 to survival mod) (and yes, you can die from drinking cactus juice.)
+if they don't have wisdom- <name> cuts open a cactus and drinks the juice. They immediately say "Drink cactus juice. I'll quench ya. nothing's quenchier. it's the quenchiest." and become temporarily delusional. (-0.5 to survival mod) (and yes, you can die from drinking cactus juice.)
 
-if they have AWP- (2/3rds chance with DEX 1/3rd chance without) <name> manages to snipe <enemy tribute> with an AWP. (1/3rd chance with DEX 2/3rds chance without) <name> barely misses <enemy tribute> with an AWP. | If they hit, the target dies unless they have constitution, in which case they are heavily injured. (-0.5 survival mod)
+if they have AWP- (2/3rds chance with DEX 1/3rd chance without) <name> manages to snipe <enemy tribute> with an AWP. (1/3rd chance with DEX 2/3rds chance without) <name> barely misses <enemy tribute> with an AWP. | If they hit, the target dies unless they have constitution, in which case they are heavily injured. (-0.7 survival mod)
 
 if they have grenade belt- <name> sets a trap with their grenade belt. roll 1d20. On 16-20: and <enemy tribute> exploded. on 2-15: but nobody fell for it. on 1: but they accidentally set it off. (-0.75 survival mod)
 
-misc- <name> searches for a water source and is/isn't successful (if found +0.25 to survival mod),
-<name> almost falls/falls into a bear trap (if they fall -0.25 to survival mod),
+misc- <name> searches for a water source and is/isn't successful (if found +0.5 to survival mod),
+<name> almost falls/falls into a bear trap (if they fall -0.5 to survival mod),
 
 
 
