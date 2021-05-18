@@ -740,9 +740,6 @@ def corn_feast ():
         p2 = 0
         p1 = checkEqual(r.choice(is_goingToFeast), p2, len(is_goingToFeast), True)
         p2 = checkEqual(p1, r.choice(is_goingToFeast), len(is_goingToFeast), False)
-        
-        for i in is_goingToFeast:
-            print(i)
 
         if p2 != p1:
             feastFight(p1, p2)
