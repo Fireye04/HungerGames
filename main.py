@@ -125,7 +125,6 @@ def game_initialize():
                     #forced to fight in cornucopia
 
 def died (player:Player, deathReason):
-    print(player)
     players.remove(player)
     dead.append(player)
     print(f"{player.get_name()} died from {deathReason}.\n\n")
@@ -207,7 +206,7 @@ def feastFight(player1:Player, player2:Player):
                 print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player2)
         else:
-            players.remove(player2)
+            
             dead.append(player2)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
             is_goingToFeast.remove(player2)
@@ -229,7 +228,7 @@ def feastFight(player1:Player, player2:Player):
                 print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player1)
         else:
-            players.remove(player1)
+            
             dead.append(player1)
             #player 2 wins
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()}.\n")
@@ -262,7 +261,7 @@ def feastFight(player1:Player, player2:Player):
             is_goingToFeast.remove(player2)
             died(player2, f"fighting {player1}")
 
-        if player1.get_const() > 0 and player2.get_const() > 0:
+        elif player1.get_const() > 0 and player2.get_const() > 0:
             print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed. Both remain at the feast.\n")
 
         
@@ -677,7 +676,6 @@ def checkEqual (p1:Player, p2:Player, playerListNum):
         np2 = r.choice(is_goingToFeast)
         return checkEqual(p1, np2, playerListNum)
     else:
-        print(f"final- {type(p2)}")
         return p2
 
 def corn_feast ():
