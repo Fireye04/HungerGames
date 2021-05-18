@@ -675,7 +675,6 @@ def cannons ():
 def checkEqual (p1:Player, p2:Player, playerListNum):
     if p1 == p2 and playerListNum >= 2:
         np2 = r.choice(is_goingToFeast)
-        print(type(np2))
         return checkEqual(p1, np2, playerListNum)
     else:
         print(f"final- {type(p2)}")
@@ -723,9 +722,6 @@ def corn_feast ():
         p1 = r.choice(is_goingToFeast)
         p2 = checkEqual(p1, r.choice(is_goingToFeast), len(is_goingToFeast))
         
-        
-            
-        print(type(p2))
         if p2 != p1:
             feastFight(p1, p2)
 
