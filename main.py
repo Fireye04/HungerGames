@@ -252,16 +252,15 @@ def feastFight(player1:Player, player2:Player):
         else:
             player2.set_const(-0.25)
 
-        if player1.get_const() <= 0:
-            is_goingToFeast.remove(player2)
-            died(player1, f"fighting {player2}")
-                
-        
-        if player2.get_const() <= 0:
-            is_goingToFeast.remove(player2)
-            died(player2, f"fighting {player1}")
-
-        elif player1.get_const() > 0 and player2.get_const() > 0:
+        if player1.get_const() <= 0 or player2.get_const() <= 0:
+            if player1.get_const() <= 0:
+                is_goingToFeast.remove(player1)
+                died(player1, f"fighting {player2}")
+            
+            if player2.get_const() <= 0:
+                is_goingToFeast.remove(player2)
+                died(player2, f"fighting {player1}")
+        else:
             print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed. Both remain at the feast.\n")
 
         
