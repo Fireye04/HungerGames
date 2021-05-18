@@ -673,6 +673,7 @@ def cannons ():
             dead.clear()
         else:
             print(f"As night falls, the cannon remains silent.\n")
+        print(f"{len(players)} tributes remain.")
 
 
 
