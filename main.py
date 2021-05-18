@@ -125,6 +125,8 @@ def game_initialize():
                     #forced to fight in cornucopia
 
 def died (player:Player, deathReason):
+
+
     players.remove(player)
     dead.append(player)
     print(f"{player.get_name()} died from {deathReason}.\n\n")
@@ -188,6 +190,7 @@ def fight(player1:Player, player2:Player):
 def feastFight(player1:Player, player2:Player):
     #fight function. It just runs based on d20 rolls
     # print(player1)
+
     fight_const_x = gen_fight_const(player1)
     fight_const_y = gen_fight_const(player2)
     if fight_const_x>fight_const_y:
@@ -206,7 +209,7 @@ def feastFight(player1:Player, player2:Player):
                 print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player2)
         else:
-            
+            players.remove(player2)
             dead.append(player2)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
             is_goingToFeast.remove(player2)
@@ -228,7 +231,7 @@ def feastFight(player1:Player, player2:Player):
                 print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player1)
         else:
-            
+            players.remove(player2)
             dead.append(player1)
             #player 2 wins
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()}.\n")
@@ -242,8 +245,6 @@ def feastFight(player1:Player, player2:Player):
             player2.set_const(-0.1)
         else:
             player1.set_const(-0.25)
-        
-
         
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.1)
@@ -671,9 +672,12 @@ def cannons ():
 
 
 def checkEqual (p1:Player, p2:Player, playerListNum):
-    if p1 == p2 and playerListNum >= 2:
+    if (p1 == p2 or p2 not in players) and playerListNum >= 2:
         np2 = r.choice(is_goingToFeast)
         return checkEqual(p1, np2, playerListNum)
+    elif p1 not in players and playerListNum >= 2:
+        np1 = r.choice(is_goingToFeast)
+        return checkEqual(np1, p2, playerListNum)
     else:
         return p2
 
@@ -716,7 +720,8 @@ def corn_feast ():
             member.give_item(stolenItem)
             is_goingToFeast.remove(member)
     while len(is_goingToFeast) >= 2:
-        p1 = r.choice(is_goingToFeast)
+        p2 = 0
+        p1 = checkEqual(r.choice(is_goingToFeast), p2, len(is_goingToFeast))
         p2 = checkEqual(p1, r.choice(is_goingToFeast), len(is_goingToFeast))
         
         if p2 != p1:
@@ -756,24 +761,24 @@ def gameManager ():
         print("-----------------------\n")
 
     corn_feast()
+    """
+    while len(players) > 1:
+        print("-----------------------\n")
 
-    #while len(players) > 1:
-        #print("-----------------------\n")
+        randomEventManager()
 
-        #randomEventManager()
+        print("-----------------------\n")
 
-        #print("-----------------------\n")
-
-        #cannons()
+        cannons()
 
 
-    #if len(players) == 1:
-        #print("<><><><><><><><><><><><>\n")
+    if len(players) == 1:
+        print("<><><><><><><><><><><><>\n")
 
-        #win()
+        win()
 
-        #print("<><><><><><><><><><><><>\n")
-
+        print("<><><><><><><><><><><><>\n")
+    """
 gameManager()
 
 
