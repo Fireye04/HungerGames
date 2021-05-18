@@ -197,14 +197,16 @@ def feastFight(player1:Player, player2:Player):
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
             if player2.get_const() <= 0:
-                died(player2, f"fighting {player1}")
+                is_goingToFeast.remove(player2)
+                return died(player2, f"fighting {player1}")
+
             else:
                 print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player2)
         elif player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
             if player2.get_const() <= 0:
-                died(player2, f"fighting {player1}")
+                return died(player2, f"fighting {player1}")
             else:
                 print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player2)
@@ -219,14 +221,15 @@ def feastFight(player1:Player, player2:Player):
         if player1.get_stat() != stats.CHA:
             player1.set_const(-0.5)
             if player1.get_const() <= 0:
-                died(player1, f"fighting {player2}")
+                is_goingToFeast.remove(player1)
+                return died(player1, f"fighting {player2}")
             else:
                 print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player1)
         elif player1.get_stat == stats.CON:
             player1.set_const(-0.5)
             if player1.get_const() <= 0:
-                died(player1, f"fighting {player2}")
+                return died(player1, f"fighting {player2}")
             else:
                 print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player1)
@@ -252,6 +255,8 @@ def feastFight(player1:Player, player2:Player):
             player2.set_const(-0.1)
         else:
             player2.set_const(-0.25)
+
+        # NOTE THIS FOLLOWING STATEMENT HAS NOT BEEN TESTED AND COULD JUST KILL ONE WHILE THE OTHER LIVES EVEN WITH THE 0 CONSTANT
 
         if player1.get_const() <= 0 or player2.get_const() <= 0:
             if player1.get_const() <= 0:
@@ -671,15 +676,26 @@ def cannons ():
 
 
 
-def checkEqual (p1:Player, p2:Player, playerListNum):
-    if (p1 == p2 or p2 not in players) and playerListNum >= 2:
-        np2 = r.choice(is_goingToFeast)
-        return checkEqual(p1, np2, playerListNum)
-    elif p1 not in players and playerListNum >= 2:
-        np1 = r.choice(is_goingToFeast)
-        return checkEqual(np1, p2, playerListNum)
+def checkEqual (p1:Player, p2:Player, playerListNum, isp1):
+    if playerListNum >= 2 and isp1 == True:
+        if p1 not in players:
+            np1 = r.choice(is_goingToFeast)
+            return checkEqual(np1, p2, playerListNum, True)
+        elif p1 in players:
+            return p1
+    elif playerListNum > 2 and isp1 == False:
+        if p1 == p2 or p2 not in players:
+            np2 = r.choice(is_goingToFeast)
+            return checkEqual(p1, np2, playerListNum, False)
+        elif p1 != p2 and p2 in players:
+            return p2
+    elif playerListNum == 2 and isp1 == False:
+        is_goingToFeast.remove(p1)
+        np2 = is_goingToFeast[0]
+        is_goingToFeast.append(p1)
+        return np2
     else:
-        return p2
+        return
 
 def corn_feast ():
     remP = len(players)
@@ -721,8 +737,8 @@ def corn_feast ():
             is_goingToFeast.remove(member)
     while len(is_goingToFeast) >= 2:
         p2 = 0
-        p1 = checkEqual(r.choice(is_goingToFeast), p2, len(is_goingToFeast))
-        p2 = checkEqual(p1, r.choice(is_goingToFeast), len(is_goingToFeast))
+        p1 = checkEqual(r.choice(is_goingToFeast), p2, len(is_goingToFeast), True)
+        p2 = checkEqual(p1, r.choice(is_goingToFeast), len(is_goingToFeast), False)
         
         if p2 != p1:
             feastFight(p1, p2)
