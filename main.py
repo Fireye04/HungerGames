@@ -198,7 +198,7 @@ def feastFight(player1:Player, player2:Player):
             player2.set_const(-0.7)
             if player2.get_const() <= 0:
                 is_goingToFeast.remove(player2)
-                return died(player2, f"fighting {player1}")
+                died(player2, f"fighting {player1}")
 
             else:
                 print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
@@ -222,7 +222,7 @@ def feastFight(player1:Player, player2:Player):
             player1.set_const(-0.7)
             if player1.get_const() <= 0:
                 is_goingToFeast.remove(player1)
-                return died(player1, f"fighting {player2}")
+                died(player1, f"fighting {player2}")
             else:
                 print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player1)
@@ -234,11 +234,11 @@ def feastFight(player1:Player, player2:Player):
                 print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
                 is_goingToFeast.remove(player1)
         else:
-            players.remove(player2)
+            players.remove(player1)
             dead.append(player1)
             #player 2 wins
             print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()}.\n")
-            is_goingToFeast.remove(player2)
+            is_goingToFeast.remove(player1)
         return player2
     if fight_const_x==fight_const_y:
         
@@ -741,6 +741,9 @@ def corn_feast ():
         p1 = checkEqual(r.choice(is_goingToFeast), p2, len(is_goingToFeast), True)
         p2 = checkEqual(p1, r.choice(is_goingToFeast), len(is_goingToFeast), False)
         
+        for i in is_goingToFeast:
+            print(i)
+
         if p2 != p1:
             feastFight(p1, p2)
 
