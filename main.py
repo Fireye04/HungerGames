@@ -338,9 +338,9 @@ def item_fight(player1:Player, player2:Player, item):
         return None
 
 
-def gen_fight_const(player:Player):
+def gen_fight_const(playe:Player):
     #roll with advantage if str
-    if player.get_stat() == stats.STR:
+    if playe.get_stat() == stats.STR:
         return max(r.randint(0,20), r.randint(0,20))
     else:
         return r.randint(0,20)
@@ -675,11 +675,10 @@ def cannons ():
 def checkEqual (p1:Player, p2:Player, playerListNum):
     if p1 == p2 and playerListNum >= 2:
         p2 = r.choice(is_goingToFeast)
-        print(p2)
-        for i in is_goingToFeast:
-            print(i.get_name())
+        print(type(p2))
         checkEqual(p1, p2, playerListNum)
     else:
+        print(type(p2))
         return p2
 
 def corn_feast ():
@@ -724,24 +723,20 @@ def corn_feast ():
         p1 = r.choice(is_goingToFeast)
         p2 = r.choice(is_goingToFeast)
         
-        print(is_goingToFeast)
-        print(p1)
-        print(p2)
 
         if p2 == p1 and len(is_goingToFeast) >= 2:
             p2 = checkEqual(p1, p2, len(is_goingToFeast))
             
-        print(p1)
-        print(p2)
-
+        print(type(p2))
         if p2 != p1:
             feastFight(p1, p2)
 
     if len(is_goingToFeast) == 1:
-        print(f"{is_goingToFeast[0]} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
-        is_goingToFeast[0].set_const(1)
-        for i in cornucopia_items:
-            is_goingToFeast[0].give_item(i)
+        winner = is_goingToFeast[0]
+        print(f"{winner} is the final tribute remaining. They loot everything, grab a snack, and finally venture back out into the arena.\n")
+        winner.set_const(1)
+        for index, i in enumerate(cornucopia_items):
+            winner.give_item(i)
             is_goingToFeast.clear()
 
 def win ():
