@@ -7,6 +7,8 @@ Notes for future interactivity update
 for cornucopia allow each player to declare intent (whcih item they're going for, whether theyre staying or not, whether they team, etc)
 
 Note- for balance update, ctrl f .set_stat( and adjust as necessary.
+
+Note- for next update try to al,;..................,,,,,,,,,dd in weapons during standard battles.
 """
 
 class stats(enum.Enum):
@@ -62,8 +64,8 @@ class Player(object):
         for i in self.item_list:
             y.append(i.value())
         return y
-    def remove_item (self, item):
-        self.item_list.remove(item)
+    def set_list (self, item):
+        self.item_list = item
     def get_alive(self):
         return self.is_alive
     def set_alive (self, life):
@@ -97,6 +99,8 @@ by_corn = []
 dead = []
 players = []
 is_running = []
+
+docket = []
 
 is_goingToFeast = []
 
@@ -276,6 +280,7 @@ def feastFight(player1:Player, player2:Player):
         return None
 
 def randFight(player1:Player, player2:Player):
+    global docket
     #fight function. It just runs based on d20 rolls
     # print(player1)
 
@@ -285,48 +290,40 @@ def randFight(player1:Player, player2:Player):
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
             if player2.get_const() <= 0:
-                docket.remove(player2)
                 died(player2, f"their wounds after fighting {player1}")
 
             else:
                 print(f"{player1.get_name()} won a fight with {player2.get_name()}, but spared {player2.get_name()}'s life. {player2.get_name()} runs away.\n")
-                docket.remove(player2)
         elif player2.get_stat() == stats.CON:
             player2.set_const(-0.7)
             if player2.get_const() <= 0:
                 return died(player2, f"fighting {player1}")
             else:
                 print(f"{player1.get_name()} won a fight with {player2.get_name()}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} runs away.\n")
-                docket.remove(player2)
         else:
             players.remove(player2)
             dead.append(player2)
             print(f"{player1.get_name()} won a fight with {player2.get_name()} and killed them in the fight.\n")
-            docket.remove(player2)
         #player one wins
         return player1
     if fight_const_y>fight_const_x:
         if player1.get_stat() != stats.CHA:
             player1.set_const(-0.5)
             if player1.get_const() <= 0:
-                docket.remove(player1)
                 died(player1, f"their wounds after fighting {player2}")
             else:
                 print(f"{player2.get_name()} won a fight with {player1.get_name()}, but spared {player1.get_name()}'s life. {player1.get_name()} runs away.\n")
-                docket.remove(player1)
         elif player1.get_stat == stats.CON:
             player1.set_const(-0.5)
             if player1.get_const() <= 0:
                 return died(player1, f"their wounds after fighting {player2}")
             else:
                 print(f"{player2.get_name()} won a fight with {player1.get_name()}, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} runs away.\n")
-                docket.remove(player1)
         else:
             players.remove(player1)
             dead.append(player1)
             #player 2 wins
             print(f"{player2.get_name()} won a fight with {player1.get_name()} and killed them.\n")
-            docket.remove(player1)
         return player2
     if fight_const_x==fight_const_y:
         
@@ -348,16 +345,12 @@ def randFight(player1:Player, player2:Player):
 
         if player1.get_const() <= 0 or player2.get_const() <= 0:
             if player1.get_const() <= 0:
-                docket.remove(player1)
                 died(player1, f"their wounds after fighting {player2}")
             
             if player2.get_const() <= 0:
-                docket.remove(player2)
                 died(player2, f"their wounds after fighting {player1}")
         else:
             print(f"{player1.get_name()} fought {player2.get_name()}. Both tributes emerged from the battle relatively unscathed. Both leave the scene.\n")
-            docket.remove(player2)
-            docket.remove(player1)
 
 
         
@@ -541,9 +534,11 @@ def cuts_tree (player:Player):
 
 ##############SAVING FOR LATER###################
 def hunts_enemy (p1:Player, p2:Player):
-    
-    print(f"{p1.get_name()} hunts down {p2.get_name()}.\n")
+    # find which weapon triggered the call, and pass it as an argument in randFight Will have to edit prints in randFight.
 
+    #if r.choice([True, False]):
+    print(f"{p1.get_name()} hunts down {p2.get_name()}.\n")
+    docket.remove(p2)
     winner = randFight(p1, p2)
     if winner == p1:
         sponsorChance(p1, 5)
@@ -554,6 +549,8 @@ def hunts_enemy (p1:Player, p2:Player):
             sponsorChance(p1, 1)
         if p2 in players:
             sponsorChance(p2, 1)
+    #else:
+
 ##############SAVING FOR LATER###################
 
 def hunts_food (player:Player):
@@ -611,43 +608,84 @@ def cactus_juice  (player:Player):
     else:
         sponsorChance(player, 3)
     
-##############SAVING FOR LATER###################
-"""
-def snipe (player):
-    p = player.get_items_enums()
+
+
+def snipe (p1:Player, p2:Player):
+    global docket
+    p = p1.get_items_enums()
     if item_directory.BOW in p:
         weapon = "bow and arrows"
     if item_directory.AWP in p:
         weapon = "AWP"
 
 
-    if player.get_stat() == stats.DEX:
+    if p1.get_stat() == stats.DEX:
         if r.choice([True, True, True, False]):
-            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
-            sponsorChance(player, 4)
+            print(f"{p1.get_name()} snipes {p2.get_name()} with their {weapon}.\n")
+            if weapon == "AWP":
+                for i, item in enumerate(p2.get_items_enums()):
+                    p1.give_item(item)
+                died(p2, f"being sniped by {p1.get_name()}")
+                docket.remove(p2)
+            else:
+                p2.set_const(-0.7)
+                if p2.get_const() <= 0:
+                    died(p2, f"their wounds after being sniped by {p1.get_name()}")
+                docket.remove(p2)
+            sponsorChance(p1, 4)
 
         else:
-            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
-            sponsorChance(player, 1)
+            print(f"{p1.get_name()} attempts to snipe {p2.get_name()} wth their {weapon}, however misses.\n")
+            sponsorChance(p1, 1)
     else:
         if r.choice([True, False]):
-            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
-            if weapon == "belt of grenades":
-                 #TENATIVE, NOT YET BEEN TESTED
-                #player.get_items_enums().remove(item_directory.GRENADES)
-                pass
-            sponsorChance(player, 4)
+            print(f"{p1.get_name()} snipes {p2.get_name()} with their {weapon}.\n")
+            if weapon == "AWP":
+                for i, item in enumerate(p2.get_items_enums()):
+                    p1.give_item(item)
+                died(p2, f"being sniped by {p1.get_name()}")
+                docket.remove(p2)
+            else:
+                p2.set_const(-0.7)
+                if p2.get_const() <= 0:
+                    died(p2, f"their wounds after being sniped by {p1.get_name()}")
+                docket.remove(p2)
+            sponsorChance(p1, 4)
         else:
-            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
-            sponsorChance(player, 1)
+            print(f"{p1.get_name()} attempts to snipe {p2.get_name()} wth their {weapon}, however misses.\n")
+            sponsorChance(p1, 1)
 
 
 
 
-def grenade_trap (player:Player):
-    print(f"")
-"""
-##############SAVING FOR LATER###################
+def grenade_trap (p1:Player, p2:Player):
+    num = r.randint(1,20)
+    print(f"{p1.get_name()} sets a trap with their grenade belt.\n")
+    if num > 17:
+        print(f"{p2.get_name()} walked directly into {p1.get_name()}'s trap.\n")
+        docket.remove(p2)
+        died(p2, "blowing up")
+        for i, item in enumerate(p2.get_items()):
+            
+            # half of p2's items were destroyed
+
+            if i % 2 == 0:
+                p1.give_item(item)
+
+        """
+        lst = p1.get_items()
+        print(lst)
+        
+        lst = lst.remove(item_directory.GRENADES)
+        p1.set_list(lst)
+        """
+        sponsorChance(p1, 4)
+    if num > 1 and num <= 17:
+        print(f"Nothing happens and {p1.get_name()} packs up their grenade belt and leaves.\n")
+    else:
+        print(f"{p1.get_name()} accidentally triggers their own trap.\n")
+        died(p1, "their own trap")
+
 
 def water (player:Player):
 
@@ -684,6 +722,7 @@ def bear_trap(player:Player):
                 sponsorChance(player, 2)       
 
 def randomEventManager ():
+    global docket
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
 
     # docket is all remaining players for this round
@@ -714,7 +753,7 @@ def randomEventManager ():
         #checks for weapons
         if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems  or item_directory.KNIFE in pItems or item_directory.GRENADES in pItems or item_directory.BOW in pItems:
             #HUNTS ENEMY, TEMPORARILY COMMENTED FOR TESTING
-            #player_options.append("hunts enemy")
+            player_options.append("hunts enemy")
             #HUNTS FOOD
             player_options.append("hunts food")
         
@@ -743,11 +782,14 @@ def randomEventManager ():
        # print(f"{player}- {rActivity}")
         
         # HEYO IM SKIPPING THE ONES THAT REFERENCE OTHER PLAYERS COS IDK EXACTLY HOW TO DO THAT. ACTIVITIES LABELED 'DO LATER' OR 'SAVING FOR LATER' INCLUDE A REFERENCE TO ANOTHER CHARACTER
+
+        
+
         if rActivity == "cuts tree":
             cuts_tree(player)
         elif rActivity == "hunts enemy":
             p2 = 0
-            p1 = checkEqual(r.choice(docket), p2, players, True)
+            p1 = checkEqual(player, p2, players, True)
             p2 = checkEqual(p1, r.choice(docket), players, False)
             hunts_enemy(p1, p2)
         elif rActivity == "hunts food":
@@ -757,11 +799,16 @@ def randomEventManager ():
         elif rActivity == "cactus juice":
             cactus_juice(player)
         elif rActivity == "snipe":
-            #DO LATER
-            pass
+            p2 = 0
+            p1 = checkEqual(player, p2, players, True)
+            p2 = checkEqual(p1, r.choice(docket), players, False)
+            snipe(p1, p2)
+            
         elif rActivity == "grenade trap":
-            #DO LATER
-            pass
+            p2 = 0
+            p1 = checkEqual(player, p2, players, True)
+            p2 = checkEqual(p1, r.choice(docket), players, False)
+            grenade_trap(p1, p2)
         elif rActivity == "water":
             water(player)
         elif rActivity == "bear trap":
