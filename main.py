@@ -1,7 +1,13 @@
 import enum
+import asyncio
 import random as r
 from item import *
 
+from discord.ext import commands    
+client = commands.Bot(command_prefix=".")
+client.remove_command('help')
+
+# Credit to Eshaan for assisting with enums as well as the player class and the item list.
 """
 Notes for future interactivity update
 for cornucopia allow each player to declare intent (whcih item they're going for, whether theyre staying or not, whether they team, etc)
@@ -11,15 +17,33 @@ Note- for balance update, ctrl f .set_stat( and adjust as necessary.
 Note- for next update try to al,;..................,,,,,,,,,dd in weapons during standard battles.
 """
 
+
 class stats(enum.Enum):
     STR = 'S'
     CHA = 'C'
     WIS = 'W'
     DEX = 'D'
     CON = 'C'
-Names = ["Bob1", "Bob2", "Bob3", "Bob4", "Bob5", "Bob6", "Bob7", "Bob8", "Bob9", "Bob10", "Bob11", "Bob12", "Bob13", "Bob14", "Bob15", "Bob16", "Bob17", "Bob18", "Bob19", "Bob20", "Bob21", "Bob22", "Bob23", "Bob24"]
-old_stats = ["STR", "DEX", "CON", "WIS", "WIS", "CHA","STR", "DEX", "CON", "WIS", "WIS", "CHA", "STR", "DEX", "CON", "WIS", "WIS", "CHA", "STR", "DEX", "CON", "WIS", "WIS", "CHA"]
-s_stats = [stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA,stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA, stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA, stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA]
+
+
+Names = [
+    "Bob1", "Bob2", "Bob3", "Bob4", "Bob5", "Bob6", "Bob7", "Bob8", "Bo1b9",
+    "Bob10", "Bob11", "Bob12", "Bob13", "Bob14", "Bob15", "Bob16", "Bob17",
+    "Bob18", "Bob19", "Bob20", "Bob21", "Bob22", "Bob23", "Bob24"
+]
+old_stats = [
+    "STR", "DEX", "CON", "WIS", "WIS", "CHA", "STR", "DEX", "CON", "WIS",
+    "WIS", "CHA", "STR", "DEX", "CON", "WIS", "WIS", "CHA", "STR", "DEX",
+    "CON", "WIS", "WIS", "CHA"
+]
+s_stats = [
+    stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA,
+    stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA,
+    stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA,
+    stats.STR, stats.DEX, stats.CON, stats.WIS, stats.WIS, stats.CHA
+]
+
+
 #print(s_stats)
 class Player(object):
     def __init__(self, name, constant_of_survival, strong_stat, npc):
@@ -31,66 +55,102 @@ class Player(object):
         self.npc = npc
         self.is_alive = True
         self.has_crafted = False
+
     def get_name(self):
         return self.name
+
     def get_busy(self):
         return self.is_busy
+
     def set_busy(self, new_busy):
         self.busy = new_busy
         return self.busy
+
     def __str__(self):
-        return(self.name)
+        return (self.name)
+
     def get_const(self):
         return self.constant_of_survival
+
     def set_const(self, change):
         # REMEMBER TO PUT SIGN WHEN CALLING
         self.constant_of_survival = self.constant_of_survival + change
+
     def get_stat(self):
         return self.strong_stat
+
     def set_stat(self, new_stat):
         self.strong_stat = new_stat
         return self.strong_stat
+
     def is_npc(self):
-      #WORK ON THIS
-      return self.npc
-      #WORK ON THIS ^^
+        #WORK ON THIS
+        return self.npc
+        #WORK ON THIS ^^
     def give_item(self, item):
-      self.item_list.append(item)
-      return item
-    def get_items (self):
+        self.item_list.append(item)
+        return item
+
+    def get_items(self):
         return self.item_list
+
     def get_items_enums(self):
         y = []
         for i in self.item_list:
             y.append(i.value())
         return y
-    def set_list (self, item):
+
+    def set_list(self, item):
         self.item_list = item
+
     def get_alive(self):
         return self.is_alive
-    def set_alive (self, life):
+
+    def set_alive(self, life):
         # life should be a bool
         self.is_alive = life
-    def get_crafted (self):
+
+    def get_crafted(self):
         return self.has_crafted
-    def set_crafted (self, crafted):
+
+    def set_crafted(self, crafted):
         self.has_crafted = crafted
-        
+
+
 # remember to put in teams later
 class Team(object):
     pass
 
 
-
 #TODO: rewrite this
-cornucopia_items = initialize_object_list([item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD, item_directory.RATIONS, item_directory.AXE, item_directory.CORN, item_directory.BOW])
-inner_cornucopia_items = initialize_object_list([item_directory.AWP, item_directory.GRENADES, item_directory.KATANA])
+cornucopia_items = initialize_object_list([
+    item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD,
+    item_directory.RATIONS, item_directory.AXE, item_directory.CORN,
+    item_directory.BOW
+])
+inner_cornucopia_items = initialize_object_list(
+    [item_directory.AWP, item_directory.GRENADES, item_directory.KATANA])
 
-all_items = initialize_object_list([item_directory.AWP, item_directory.GRENADES, item_directory.KATANA, item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD, item_directory.RATIONS, item_directory.AXE, item_directory.CORN, item_directory.BOW])
+all_items = initialize_object_list([
+    item_directory.AWP, item_directory.GRENADES, item_directory.KATANA,
+    item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD,
+    item_directory.RATIONS, item_directory.AXE, item_directory.CORN,
+    item_directory.BOW
+])
 
-sponsor_items = initialize_object_list([item_directory.AWP, item_directory.GRENADES, item_directory.KATANA, item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD, item_directory.RATIONS, item_directory.AXE, item_directory.CORN, item_directory.BOW, item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD, item_directory.RATIONS, item_directory.AXE, item_directory.CORN, item_directory.BOW])
+sponsor_items = initialize_object_list([
+    item_directory.AWP, item_directory.GRENADES, item_directory.KATANA,
+    item_directory.MEDKIT, item_directory.KNIFE, item_directory.SWORD,
+    item_directory.RATIONS, item_directory.AXE, item_directory.CORN,
+    item_directory.BOW, item_directory.MEDKIT, item_directory.KNIFE,
+    item_directory.SWORD, item_directory.RATIONS, item_directory.AXE,
+    item_directory.CORN, item_directory.BOW
+])
 
-craftableItems = initialize_object_list([item_directory.WOOD_SPEAR, item_directory.HANDAXE, item_directory.STONE_SPEAR, item_directory.BOW])
+craftableItems = initialize_object_list([
+    item_directory.WOOD_SPEAR, item_directory.HANDAXE,
+    item_directory.STONE_SPEAR, item_directory.BOW
+])
 
 num_inner_cornucopia_items = 3
 player_options = []
@@ -104,14 +164,18 @@ docket = []
 
 is_goingToFeast = []
 
+
 def game_initialize():
     for index, i in enumerate(Names):
         player = Player(i, 1, s_stats[index], False)
         #appending player name to players
         players.append(player)
         if not player.get_busy():
-            if r.choice([True, False, False, False]) or player.get_stat() == stats.WIS:
-                print(f'{player.get_name()} runs away into the arena to avoid the cornucopia.\n')
+            if r.choice([True, False, False, False
+                         ]) or player.get_stat() == stats.WIS:
+                print(
+                    f'{player.get_name()} runs away into the arena to avoid the cornucopia.\n'
+                )
                 is_running.append(player)
                 #Smart Enough to ignore the cornocopia
             else:
@@ -119,9 +183,11 @@ def game_initialize():
                 if r.choice([True, False]):
                     if player.get_stat() == stats.DEX:
                         is_running.append(player)
-                        
+
                         player.give_item(randItem)
-                        print(f'{player.get_name()} speeds into the cornucopia, randomly grabs {randItem}, and quickly runs away\n')
+                        print(
+                            f'{player.get_name()} speeds into the cornucopia, randomly grabs {randItem}, and quickly runs away\n'
+                        )
                         #gets an item and runs away
                     else:
                         #forced to fight
@@ -130,52 +196,67 @@ def game_initialize():
                     at_corn.append(player)
                     #forced to fight in cornucopia
 
-def died (player:Player, deathReason):
 
+def died(player: Player, deathReason):
 
     players.remove(player)
     dead.append(player)
     print(f"{player.get_name()} died from {deathReason}.\n\n")
 
-def fight(player1:Player, player2:Player):
+
+def fight(player1: Player, player2: Player):
     #fight function. It just runs based on d20 rolls
     player1.set_busy(True)
     player2.set_busy(True)
     fight_const_x = gen_fight_const(player1)
     fight_const_y = gen_fight_const(player2)
-    if fight_const_x>fight_const_y:
+    if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n"
+            )
             is_running.append(player2)
         elif player2.get_stat() == stats.CON:
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n"
+            )
             is_running.append(player2)
             player2.set_const(-0.7)
         else:
 
             dead.append(player2)
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n"
+            )
         #player one wins
         return player1
-    if fight_const_y>fight_const_x:
+    if fight_const_y > fight_const_x:
         if player1.get_stat() != stats.CHA:
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n"
+            )
             is_running.append(player1)
             player1.set_const(-0.7)
         elif player1.get_stat == stats.CON:
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n"
+            )
             is_running.append(player1)
             player1.set_const(-0.7)
         else:
             players.remove(player1)
             dead.append(player1)
             #player 2 wins
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()} in the fight\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()} in the fight\n"
+            )
         return player2
-    if fight_const_x==fight_const_y:
-        
-        print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed.\n")
+    if fight_const_x == fight_const_y:
+
+        print(
+            f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed.\n"
+        )
 
         if player1.get_stat() == stats.CON:
             player1.set_const(-0.5)
@@ -183,7 +264,7 @@ def fight(player1:Player, player2:Player):
             player2.set_const(-0.5)
         else:
             player1.set_const(-0.7)
-        
+
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
@@ -193,13 +274,14 @@ def fight(player1:Player, player2:Player):
         #nobody wins
         return None
 
-def feastFight(player1:Player, player2:Player):
+
+def feastFight(player1: Player, player2: Player):
     #fight function. It just runs based on d20 rolls
     # print(player1)
 
     fight_const_x = gen_fight_const(player1)
     fight_const_y = gen_fight_const(player2)
-    if fight_const_x>fight_const_y:
+    if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
             if player2.get_const() <= 0:
@@ -207,54 +289,66 @@ def feastFight(player1:Player, player2:Player):
                 died(player2, f"their wounds after fighting {player1}")
 
             else:
-                print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n")
+                print(
+                    f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but spared {player2.get_name()}'s life. {player2.get_name()} escapes the cornucopia into the arena.\n"
+                )
                 is_goingToFeast.remove(player2)
         elif player2.get_stat() == stats.CON:
             player2.set_const(-0.7)
             if player2.get_const() <= 0:
                 return died(player2, f"fighting {player1}")
             else:
-                print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n")
+                print(
+                    f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} escapes the cornucopia into the arena.\n"
+                )
                 is_goingToFeast.remove(player2)
         else:
             players.remove(player2)
             dead.append(player2)
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} inside the cornucopia and killed {player2.get_name()} in the fight\n"
+            )
             is_goingToFeast.remove(player2)
         #player one wins
         return player1
-    if fight_const_y>fight_const_x:
+    if fight_const_y > fight_const_x:
         if player1.get_stat() != stats.CHA:
             player1.set_const(-0.7)
             if player1.get_const() <= 0:
                 is_goingToFeast.remove(player1)
                 died(player1, f"their wounds after fighting {player2}")
             else:
-                print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n")
+                print(
+                    f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but spared {player1.get_name()}'s life. {player1.get_name()} escapes the cornucopia into the arena.\n"
+                )
                 is_goingToFeast.remove(player1)
         elif player1.get_stat == stats.CON:
             player1.set_const(-0.7)
             if player1.get_const() <= 0:
                 return died(player1, f"fighting {player2}")
             else:
-                print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n")
+                print(
+                    f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} escapes the cornucopia into the arena.\n"
+                )
                 is_goingToFeast.remove(player1)
         else:
             players.remove(player1)
             dead.append(player1)
             #player 2 wins
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()}.\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} inside the cornucopia and killed {player1.get_name()}.\n"
+            )
             is_goingToFeast.remove(player1)
         return player2
-    if fight_const_x==fight_const_y:
-        
+    if fight_const_x == fight_const_y:
+
         if player1.get_stat() == stats.CON:
             player1.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
             player1.set_const(-0.7)
-        
+
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
@@ -268,72 +362,86 @@ def feastFight(player1:Player, player2:Player):
             if player1.get_const() <= 0:
                 is_goingToFeast.remove(player1)
                 died(player1, f"their wounds after fighting {player2}")
-            
+
             if player2.get_const() <= 0:
                 is_goingToFeast.remove(player2)
                 died(player2, f"their wounds after fighting {player1}")
         else:
-            print(f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed. Both remain at the feast.\n")
+            print(
+                f"{player1.get_name()} fought {player2.get_name()} inside the cornucopia. Both tributes emerged from the battle relatively unscathed. Both remain at the feast.\n"
+            )
 
-        
         #nobody wins
         return None
 
-def randFight(player1:Player, player2:Player):
+
+def randFight(player1: Player, player2: Player):
     global docket
     #fight function. It just runs based on d20 rolls
     # print(player1)
 
     fight_const_x = gen_fight_const(player1)
     fight_const_y = gen_fight_const(player2)
-    if fight_const_x>fight_const_y:
+    if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
             if player2.get_const() <= 0:
                 died(player2, f"their wounds after fighting {player1}")
 
             else:
-                print(f"{player1.get_name()} won a fight with {player2.get_name()}, but spared {player2.get_name()}'s life. {player2.get_name()} runs away.\n")
+                print(
+                    f"{player1.get_name()} won a fight with {player2.get_name()}, but spared {player2.get_name()}'s life. {player2.get_name()} runs away.\n"
+                )
         elif player2.get_stat() == stats.CON:
             player2.set_const(-0.7)
             if player2.get_const() <= 0:
                 return died(player2, f"fighting {player1}")
             else:
-                print(f"{player1.get_name()} won a fight with {player2.get_name()}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} runs away.\n")
+                print(
+                    f"{player1.get_name()} won a fight with {player2.get_name()}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player2.get_name()} runs away.\n"
+                )
         else:
             players.remove(player2)
             dead.append(player2)
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} and killed them in the fight.\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} and killed them in the fight.\n"
+            )
         #player one wins
         return player1
-    if fight_const_y>fight_const_x:
+    if fight_const_y > fight_const_x:
         if player1.get_stat() != stats.CHA:
             player1.set_const(-0.5)
             if player1.get_const() <= 0:
                 died(player1, f"their wounds after fighting {player2}")
             else:
-                print(f"{player2.get_name()} won a fight with {player1.get_name()}, but spared {player1.get_name()}'s life. {player1.get_name()} runs away.\n")
+                print(
+                    f"{player2.get_name()} won a fight with {player1.get_name()}, but spared {player1.get_name()}'s life. {player1.get_name()} runs away.\n"
+                )
         elif player1.get_stat == stats.CON:
             player1.set_const(-0.5)
             if player1.get_const() <= 0:
                 return died(player1, f"their wounds after fighting {player2}")
             else:
-                print(f"{player2.get_name()} won a fight with {player1.get_name()}, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} runs away.\n")
+                print(
+                    f"{player2.get_name()} won a fight with {player1.get_name()}, but {player1.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} runs away.\n"
+                )
         else:
             players.remove(player1)
             dead.append(player1)
             #player 2 wins
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} and killed them.\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} and killed them.\n"
+            )
         return player2
-    if fight_const_x==fight_const_y:
-        
+    if fight_const_x == fight_const_y:
+
         if player1.get_stat() == stats.CON:
             player1.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
             player2.set_const(-0.5)
         else:
             player1.set_const(-0.7)
-        
+
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
@@ -346,67 +454,84 @@ def randFight(player1:Player, player2:Player):
         if player1.get_const() <= 0 or player2.get_const() <= 0:
             if player1.get_const() <= 0:
                 died(player1, f"their wounds after fighting {player2}")
-            
+
             if player2.get_const() <= 0:
                 died(player2, f"their wounds after fighting {player1}")
         else:
-            print(f"{player1.get_name()} fought {player2.get_name()}. Both tributes emerged from the battle relatively unscathed. Both leave the scene.\n")
+            print(
+                f"{player1.get_name()} fought {player2.get_name()}. Both tributes emerged from the battle relatively unscathed. Both leave the scene.\n"
+            )
 
-
-        
         #nobody wins
         return None
 
+
 # THIS FUNCTIONS IS FOR FIGHTS OVER AN OBJECT
-def item_fight(player1:Player, player2:Player, item):
+def item_fight(player1: Player, player2: Player, item):
     #fight function. It just runs based on d20 rolls
     player1.set_busy(True)
     player2.set_busy(True)
     fight_const_x = gen_fight_const(player1)
     fight_const_y = gen_fight_const(player2)
-    if fight_const_x>fight_const_y:
+    if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but spared {player2.get_name()}'s life. {player1.get_name()} Then runs away into the arena.\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but spared {player2.get_name()}'s life. {player1.get_name()} Then runs away into the arena.\n"
+            )
             is_running.append(player1)
         elif player2.get_stat() == stats.CON:
             player2.set_const(-0.7)
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} Then runs away into the arena.\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} over {item}, but {player2.get_name()} managed to survive the attack due to their high constitution. {player1.get_name()} Then runs away into the arena.\n"
+            )
             is_running.append(player1)
         else:
             players.remove(player2)
             dead.append(player2)
-            print(f"{player1.get_name()} won a fight with {player2.get_name()} over {item} and killed {player2.get_name()} in the fight. {player1.get_name()} Then runs away into the arena.\n")
+            print(
+                f"{player1.get_name()} won a fight with {player2.get_name()} over {item} and killed {player2.get_name()} in the fight. {player1.get_name()} Then runs away into the arena.\n"
+            )
             is_running.append(player1)
         #player one wins
         player1.give_item(item)
         return player1
-    if fight_const_y>fight_const_x:
+    if fight_const_y > fight_const_x:
         if player1.get_stat() != stats.CHA:
             player1.set_const(-0.5)
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but spared {player1.get_name()}'s life. {player2.get_name()} Then runs away into the arena.\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but spared {player1.get_name()}'s life. {player2.get_name()} Then runs away into the arena.\n"
+            )
             is_running.append(player2)
             is_running.append(player2)
         elif player1.get_stat == stats.CON:
             player1.set_const(-0.5)
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but {player1.get_name()} managed to survive the attack due to their high constitution.{player2.get_name()} Then runs away into the arena.\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} over {item}, but {player1.get_name()} managed to survive the attack due to their high constitution.{player2.get_name()} Then runs away into the arena.\n"
+            )
             is_running.append(player2)
         else:
             players.remove(player1)
             dead.append(player1)
-            print(f"{player2.get_name()} won a fight with {player1.get_name()} over {item} and killed {player1.get_name()} in the fight. {player2.get_name()} Then runs away into the arena.\n")
+            print(
+                f"{player2.get_name()} won a fight with {player1.get_name()} over {item} and killed {player1.get_name()} in the fight. {player2.get_name()} Then runs away into the arena.\n"
+            )
             is_running.append(player2)
         #player 2 wins
         player2.give_item(item)
         return player2
-    if fight_const_x==fight_const_y:
+    if fight_const_x == fight_const_y:
 
         if r.choice([True, False]):
             player1.give_item(item)
-            print(f"{player1.get_name()} fought {player2.get_name()} over {item} and won it. Both tributes emerged from the battle relatively unscathed. Both tributes then run away into the arena.\n")
+            print(
+                f"{player1.get_name()} fought {player2.get_name()} over {item} and won it. Both tributes emerged from the battle relatively unscathed. Both tributes then run away into the arena.\n"
+            )
         else:
             player2.give_item(item)
-            print(f"{player2.get_name()} fought {player1.get_name()} over {item} and won it. Both tributes emerged from the battle relatively unscathed. Both tributes then run away into the arena.\n")
+            print(
+                f"{player2.get_name()} fought {player1.get_name()} over {item} and won it. Both tributes emerged from the battle relatively unscathed. Both tributes then run away into the arena.\n"
+            )
         is_running.append(player2)
         is_running.append(player1)
         if player1.get_stat() == stats.CON:
@@ -415,7 +540,7 @@ def item_fight(player1:Player, player2:Player, item):
             player2.set_const(-0.5)
         else:
             player1.set_const(-0.7)
-        
+
         if player2.get_stat() == stats.CON:
             player2.set_const(-0.5)
         elif player2.get_stat() == stats.CHA:
@@ -426,20 +551,23 @@ def item_fight(player1:Player, player2:Player, item):
         return None
 
 
-def gen_fight_const(playe:Player):
+def gen_fight_const(playe: Player):
     #roll with advantage if str
     if playe.get_stat() == stats.STR:
-        return max(r.randint(0,20), r.randint(0,20))
+        return max(r.randint(0, 20), r.randint(0, 20))
     else:
-        return r.randint(0,20)
+        return r.randint(0, 20)
+
 
 def corn_fights():
     #runs corn functions while someone exists
     while at_corn:
-        if(len(at_corn) == 1):
+        if (len(at_corn) == 1):
             x = at_corn[0]
             #last one standing is the winner
-            print(f"{x.get_name()} is the last remaining tribute at the cornucopia! They gather their loot.\n")
+            print(
+                f"{x.get_name()} is the last remaining tribute at the cornucopia! They gather their loot.\n"
+            )
             for i in all_items:
                 x.give_item(i)
             at_corn.remove(x)
@@ -452,17 +580,18 @@ def corn_fights():
         at_corn.remove(p2)
         p_winner = fight(p1, p2)
         # XD you thought you were fighting? hell naw!
-        
+
         if p_winner != None:
             at_corn.append(p_winner)
         else:
             at_corn.append(p1)
             at_corn.append(p2)
 
+
 def corn_fights2():
     #runs corn functions while someone exists
     while by_corn:
-        if(len(by_corn) == 1):
+        if (len(by_corn) == 1):
             x = by_corn[0]
             by_corn.remove(x)
             is_running.append(x)
@@ -474,30 +603,32 @@ def corn_fights2():
         by_corn.remove(p2)
         p_winner = item_fight(p1, p2, r.choice(cornucopia_items))
         # XD you thought you were fighting? hell naw!
-        
+
         if p_winner != None:
             pass
 
 
-
-def sponsorChance (player:Player, activityCoolness):
+def sponsorChance(player: Player, activityCoolness):
     #rolls a D20 at advantege if charisma, and adds coolness mod  to the roll
 
     x = 0
     if player.get_stat() == stats.CHA:
-        x = max(r.randint(0,20), r.randint(0,20))
+        x = max(r.randint(0, 20), r.randint(0, 20))
     else:
-        x = r.randint(0,20)
+        x = r.randint(0, 20)
 
     x += activityCoolness
 
     if x >= 20:
         # ITEMS REFERENCING EARLIER LIST AND NOT ENUM LIST
-        print(f"{player.get_name()} was sent {r.choice(sponsor_items)} by a mysterious sponsor.\n\n")
+        print(
+            f"{player.get_name()} was sent {r.choice(sponsor_items)} by a mysterious sponsor.\n\n"
+        )
     else:
         print("")
 
-def checkEqual (p1:Player, p2:Player, playerList, isp1):
+
+def checkEqual(p1: Player, p2: Player, playerList, isp1):
     if len(playerList) >= 2 and isp1 == True:
         if p1 not in players:
             np1 = r.choice(playerList)
@@ -518,7 +649,8 @@ def checkEqual (p1:Player, p2:Player, playerList, isp1):
     else:
         return
 
-def cuts_tree (player:Player):
+
+def cuts_tree(player: Player):
     tool = "e"
     if item_directory.SWORD in player.get_items_enums():
         tool = "sword"
@@ -526,14 +658,17 @@ def cuts_tree (player:Player):
         tool = "katana"
     if item_directory.AXE in player.get_items_enums():
         tool = "axe"
-    print(f"{player.get_name()} cuts down a tree wth their {tool} and builds a fire with the lumber.\n")
+    print(
+        f"{player.get_name()} cuts down a tree wth their {tool} and builds a fire with the lumber.\n"
+    )
 
     player.set_const(0.3)
 
     sponsorChance(player, 1)
 
+
 ##############SAVING FOR LATER###################
-def hunts_enemy (p1:Player, p2:Player):
+def hunts_enemy(p1: Player, p2: Player):
     # find which weapon triggered the call, and pass it as an argument in randFight Will have to edit prints in randFight.
 
     #if r.choice([True, False]):
@@ -551,9 +686,11 @@ def hunts_enemy (p1:Player, p2:Player):
             sponsorChance(p2, 1)
     #else:
 
+
 ##############SAVING FOR LATER###################
 
-def hunts_food (player:Player):
+
+def hunts_food(player: Player):
     weapon = ""
     p = player.get_items_enums()
     if item_directory.GRENADES in p:
@@ -573,15 +710,21 @@ def hunts_food (player:Player):
 
     if player.get_stat() == stats.DEX:
         if r.choice([True, True, True, False]):
-            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
+            print(
+                f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n"
+            )
             sponsorChance(player, 3)
 
         else:
-            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
+            print(
+                f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n"
+            )
             sponsorChance(player, 0)
     else:
         if r.choice([True, False]):
-            print(f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n")
+            print(
+                f"{player.get_name()} hunts down a deer wth their {weapon} and eats the meat.\n"
+            )
             if weapon == "belt of grenades":
                 """ TENATIVE, NOT YET BEEN TESTED
                 player.get_items_enums().remove(item_directory.GRENADES)
@@ -589,28 +732,35 @@ def hunts_food (player:Player):
                 pass
             sponsorChance(player, 3)
         else:
-            print(f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n")
+            print(
+                f"{player.get_name()} attempts to hunt down a deer wth their {weapon}, however is unable to catch it.\n"
+            )
             sponsorChance(player, 0)
 
-def craft_item (player:Player):
+
+def craft_item(player: Player):
     # did not give player an item
     item = r.choice(craftableItems)
-    print(f"{player.get_name()} uses their supreme intellect to craft {item.__str__()}\n")
+    print(
+        f"{player.get_name()} uses their supreme intellect to craft {item.__str__()}\n"
+    )
     player.set_crafted(True)
 
     sponsorChance(player, 2)
-    
-def cactus_juice  (player:Player):
-    print(f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!'\n")
+
+
+def cactus_juice(player: Player):
+    print(
+        f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!'\n"
+    )
     player.set_const(-.1)
     if player.get_const() <= 0:
         died(player, "drinking cactus juice")
     else:
         sponsorChance(player, 3)
-    
 
 
-def snipe (p1:Player, p2:Player):
+def snipe(p1: Player, p2: Player):
     global docket
     p = p1.get_items_enums()
     if item_directory.BOW in p:
@@ -618,10 +768,11 @@ def snipe (p1:Player, p2:Player):
     if item_directory.AWP in p:
         weapon = "AWP"
 
-
     if p1.get_stat() == stats.DEX:
         if r.choice([True, True, True, False]):
-            print(f"{p1.get_name()} snipes {p2.get_name()} with their {weapon}.\n")
+            print(
+                f"{p1.get_name()} snipes {p2.get_name()} with their {weapon}.\n"
+            )
             if weapon == "AWP":
                 for i, item in enumerate(p2.get_items_enums()):
                     p1.give_item(item)
@@ -630,16 +781,22 @@ def snipe (p1:Player, p2:Player):
             else:
                 p2.set_const(-0.7)
                 if p2.get_const() <= 0:
-                    died(p2, f"their wounds after being sniped by {p1.get_name()}")
+                    died(
+                        p2,
+                        f"their wounds after being sniped by {p1.get_name()}")
                 docket.remove(p2)
             sponsorChance(p1, 4)
 
         else:
-            print(f"{p1.get_name()} attempts to snipe {p2.get_name()} wth their {weapon}, however misses.\n")
+            print(
+                f"{p1.get_name()} attempts to snipe {p2.get_name()} wth their {weapon}, however misses.\n"
+            )
             sponsorChance(p1, 1)
     else:
         if r.choice([True, False]):
-            print(f"{p1.get_name()} snipes {p2.get_name()} with their {weapon}.\n")
+            print(
+                f"{p1.get_name()} snipes {p2.get_name()} with their {weapon}.\n"
+            )
             if weapon == "AWP":
                 for i, item in enumerate(p2.get_items_enums()):
                     p1.give_item(item)
@@ -648,30 +805,32 @@ def snipe (p1:Player, p2:Player):
             else:
                 p2.set_const(-0.7)
                 if p2.get_const() <= 0:
-                    died(p2, f"their wounds after being sniped by {p1.get_name()}")
+                    died(
+                        p2,
+                        f"their wounds after being sniped by {p1.get_name()}")
                 docket.remove(p2)
             sponsorChance(p1, 4)
         else:
-            print(f"{p1.get_name()} attempts to snipe {p2.get_name()} wth their {weapon}, however misses.\n")
+            print(
+                f"{p1.get_name()} attempts to snipe {p2.get_name()} wth their {weapon}, however misses.\n"
+            )
             sponsorChance(p1, 1)
 
 
-
-
-def grenade_trap (p1:Player, p2:Player):
-    num = r.randint(1,20)
+def grenade_trap(p1: Player, p2: Player):
+    num = r.randint(1, 20)
     print(f"{p1.get_name()} sets a trap with their grenade belt.\n")
     if num > 17:
-        print(f"{p2.get_name()} walked directly into {p1.get_name()}'s trap.\n")
+        print(
+            f"{p2.get_name()} walked directly into {p1.get_name()}'s trap.\n")
         docket.remove(p2)
         died(p2, "blowing up")
         for i, item in enumerate(p2.get_items()):
-            
+
             # half of p2's items were destroyed
 
             if i % 2 == 0:
                 p1.give_item(item)
-
         """
         lst = p1.get_items()
         print(lst)
@@ -681,29 +840,40 @@ def grenade_trap (p1:Player, p2:Player):
         """
         sponsorChance(p1, 4)
     if num > 1 and num <= 17:
-        print(f"Nothing happens and {p1.get_name()} packs up their grenade belt and leaves.\n")
+        print(
+            f"Nothing happens and {p1.get_name()} packs up their grenade belt and leaves.\n"
+        )
     else:
         print(f"{p1.get_name()} accidentally triggers their own trap.\n")
         died(p1, "their own trap")
 
 
-def water (player:Player):
+def water(player: Player):
 
     if r.choice([True, False]):
-        print(f"{player.get_name()} searches for a water source and is successful.\n")
+        print(
+            f"{player.get_name()} searches for a water source and is successful.\n"
+        )
         player.set_const(0.3)
         sponsorChance(player, 2)
     else:
-        print(f"{player.get_name()} searches for a water source, however is unable to find one.\n")
+        print(
+            f"{player.get_name()} searches for a water source, however is unable to find one.\n"
+        )
         sponsorChance(player, -1)
 
-def bear_trap(player:Player):
+
+def bear_trap(player: Player):
     if player.get_stat() == stats.DEX:
         if r.choice([True, True, True, False]):
-            print(f"{player.get_name()} almost falls into a bear trap, however manages to dodge out of the way before falling in\n")
+            print(
+                f"{player.get_name()} almost falls into a bear trap, however manages to dodge out of the way before falling in\n"
+            )
             sponsorChance(player, 2)
         else:
-            print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
+            print(
+                f"{player.get_name()} falls into a bear trap and is badly injured\n"
+            )
             player.set_const(-0.7)
             if player.get_const() <= 0:
                 died(player, "a bear trap")
@@ -711,17 +881,22 @@ def bear_trap(player:Player):
                 sponsorChance(player, 2)
     else:
         if r.choice([True, False]):
-            print(f"{player.get_name()} almost falls into a bear trap, however manages to dodge out of the way before falling in\n")
+            print(
+                f"{player.get_name()} almost falls into a bear trap, however manages to dodge out of the way before falling in\n"
+            )
             sponsorChance(player, 2)
         else:
-            print(f"{player.get_name()} falls into a bear trap and is badly injured\n")
+            print(
+                f"{player.get_name()} falls into a bear trap and is badly injured\n"
+            )
             player.set_const(-0.7)
             if player.get_const() <= 0:
                 died(player, "a bear trap")
             else:
-                sponsorChance(player, 2)       
+                sponsorChance(player, 2)
 
-def randomEventManager ():
+
+def randomEventManager():
     global docket
     # for random events, the function will first check what resources the player has and based upon those will create a custom list of possible events for them. then it will r.choice an event from that list and run a different function based on the choice.
 
@@ -737,26 +912,25 @@ def randomEventManager ():
         #checks for healing items and uses them by default.
         # COMMENTED OUT TEMPORARILY, CODE GIVING ERRORS
         #for i in pItems:
-            #if item.get_type() == i.types.ASSIST:
-            #    player.set_const(i.get_ass())
-            #    pItems.remove(i)
-        
+        #if item.get_type() == i.types.ASSIST:
+        #    player.set_const(i.get_ass())
+        #    pItems.remove(i)
 
         #checks for bladed items
         #for i in pItems:print(type(i))
         #for i in player.get_items_enums():print(type(i))
-        
+
         if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems:
             #CUTS TREE
             player_options.append("cuts tree")
 
         #checks for weapons
-        if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems  or item_directory.KNIFE in pItems or item_directory.GRENADES in pItems or item_directory.BOW in pItems:
+        if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems or item_directory.KNIFE in pItems or item_directory.GRENADES in pItems or item_directory.BOW in pItems:
             #HUNTS ENEMY, TEMPORARILY COMMENTED FOR TESTING
             player_options.append("hunts enemy")
             #HUNTS FOOD
             player_options.append("hunts food")
-        
+
         #checks for wisdom
         if player.get_stat() == stats.WIS and player.get_crafted() == False:
             #craft item
@@ -779,11 +953,9 @@ def randomEventManager ():
         player_options.append("bear trap")
         #print(player_options)
         rActivity = r.choice(player_options)
-       # print(f"{player}- {rActivity}")
-        
-        # HEYO IM SKIPPING THE ONES THAT REFERENCE OTHER PLAYERS COS IDK EXACTLY HOW TO DO THAT. ACTIVITIES LABELED 'DO LATER' OR 'SAVING FOR LATER' INCLUDE A REFERENCE TO ANOTHER CHARACTER
+        # print(f"{player}- {rActivity}")
 
-        
+        # HEYO IM SKIPPING THE ONES THAT REFERENCE OTHER PLAYERS COS IDK EXACTLY HOW TO DO THAT. ACTIVITIES LABELED 'DO LATER' OR 'SAVING FOR LATER' INCLUDE A REFERENCE TO ANOTHER CHARACTER
 
         if rActivity == "cuts tree":
             cuts_tree(player)
@@ -803,7 +975,7 @@ def randomEventManager ():
             p1 = checkEqual(player, p2, players, True)
             p2 = checkEqual(p1, r.choice(docket), players, False)
             snipe(p1, p2)
-            
+
         elif rActivity == "grenade trap":
             p2 = 0
             p1 = checkEqual(player, p2, players, True)
@@ -813,18 +985,16 @@ def randomEventManager ():
             water(player)
         elif rActivity == "bear trap":
             bear_trap(player)
-        
+
         player_options.clear()
-        
-        
 
 
-def cannons ():
+def cannons():
     if len(players) <= 10:
         if len(dead) > 1:
             print(f"As night falls, the cannon fires {len(dead)} times.\n")
             print(f"The images of the following tributes flash in the sky:\n")
-            for tribute in dead:   
+            for tribute in dead:
                 print(tribute.get_name() + "\n")
             dead.clear()
         elif len(dead) == 1:
@@ -838,7 +1008,7 @@ def cannons ():
         if len(dead) > 1:
             print(f"As night falls, the cannon fires {len(dead)} times.\n")
             print(f"The images of the following tributes flash in the sky:\n")
-            for tribute in dead:   
+            for tribute in dead:
                 print(tribute.get_name() + "\n")
             dead.clear()
         elif len(dead) == 1:
@@ -850,19 +1020,17 @@ def cannons ():
         print(f"{len(players)} tributes remain.")
 
 
-
-
-
-def corn_feast ():
+def corn_feast():
     remP = len(players)
-    print(f"An announcement is sent out to the remaining tributes: There are {remP} tributes remaining. We invite them all to return to the cornucopia for new items and resources. The remaining tributes are as follows:\n")
+    print(
+        f"An announcement is sent out to the remaining tributes: There are {remP} tributes remaining. We invite them all to return to the cornucopia for new items and resources. The remaining tributes are as follows:\n"
+    )
     for i in range(len(players)):
         print(f"{players[i]}")
     print("")
 
-    
     for index, player in enumerate(players):
-        
+
         if player.get_stat() == stats.WIS:
             if r.choice([True, False, False]):
                 is_goingToFeast.append(player)
@@ -873,23 +1041,29 @@ def corn_feast ():
     print("-----------------------\n")
 
     # returns which players are going to the feast
-    if len(is_goingToFeast) > 1: 
-        print(f"Of the remaining {remP} tributes, {len(is_goingToFeast)} show up to the feast:\n")
+    if len(is_goingToFeast) > 1:
+        print(
+            f"Of the remaining {remP} tributes, {len(is_goingToFeast)} show up to the feast:\n"
+        )
 
         for member in is_goingToFeast:
             print(member)
     elif len(is_goingToFeast) == 1:
-        print(f"Of the remaining {remP} tributes, only {is_goingToFeast[0]} shows up to the feast.\n")
+        print(
+            f"Of the remaining {remP} tributes, only {is_goingToFeast[0]} shows up to the feast.\n"
+        )
     else:
-        print(f"Of the remaining {remP} tributes, none show up to the feast.\n")
-    
+        print(
+            f"Of the remaining {remP} tributes, none show up to the feast.\n")
 
     print("-----------------------\n")
     for member in is_goingToFeast:
-        
+
         if member.get_stat() == stats.DEX:
             stolenItem = r.choice(all_items)
-            print(f"{member.get_name()} sneaks into the cornucopia and escapes with {stolenItem}\n")
+            print(
+                f"{member.get_name()} sneaks into the cornucopia and escapes with {stolenItem}\n"
+            )
             member.give_item(stolenItem)
             is_goingToFeast.remove(member)
     while len(is_goingToFeast) >= 2:
@@ -902,20 +1076,32 @@ def corn_feast ():
 
     if len(is_goingToFeast) == 1:
         winner = is_goingToFeast[0]
-        print(f"{winner} is the final tribute remaining at the feast. They loot everything, grab a snack, and finally venture back out into the arena.\n")
+        print(
+            f"{winner} is the final tribute remaining at the feast. They loot everything, grab a snack, and finally venture back out into the arena.\n"
+        )
         winner.set_const(1)
         for index, i in enumerate(cornucopia_items):
             winner.give_item(i)
             is_goingToFeast.clear()
 
-def win ():
-    print(f"{players[0]} is the last tribute standing! The hunger games have finished!")
 
-def gameManager ():
+def win():
+    print(
+        f"{players[0]} is the last tribute standing! The hunger games have finished!"
+    )
+
+    # implement stats later
+
+
+def gameManager():
+    global Names
+    for i in range(24):
+        Names[i] = input(f"enter name {i+1}: ")
+
     game_initialize()
 
     corn_fights2()
-    
+
     corn_fights()
 
     print("-----------------------\n")
@@ -941,9 +1127,10 @@ def gameManager ():
 
         print("-----------------------\n")
 
-
     corn_feast()
-    """ NOT WORKING
+
+    input("Enter to continue:")
+
     while len(players) > 1:
         print("-----------------------\n")
 
@@ -953,6 +1140,9 @@ def gameManager ():
 
         cannons()
 
+        print("-----------------------\n")
+
+        input("Enter to continue:")
 
     if len(players) == 1:
         print("<><><><><><><><><><><><>\n")
@@ -960,19 +1150,13 @@ def gameManager ():
         win()
 
         print("<><><><><><><><><><><><>\n")
-    """
+
+
 gameManager()
 
-
-
-
 # make a list of all the people staying, then run it through a function that lets them battle it out.
-            
-
-
 
 # with every task that deducts survival mod, if it drops below 0 on that task, then that task kills you.
-
 """random event ideas: 
 if they have a weapon- <name> hunts for food with <weapon> and is/isn't successful,
 <name> hunts down <another tribute> and succeeds/fails at killing them. (run fight)
@@ -996,13 +1180,11 @@ misc- <name> searches for a water source and is/isn't successful (if found +0.5 
 
 """
 
-
 # add a function for each random event
 
 #add a function to clear busy from everyone and call it between random events
 
 # add a function that generates random events on a person by person basis
-
 """
 IMPORTANT PAY ATTENTION
 NEW INFORMATION: use player.get_item_enums and item_directory.OBJECT in order to get specific weapons
