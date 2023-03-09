@@ -9,6 +9,7 @@ from item import *
 intents = discord.Intents.default()
 intents.members = True
 intents.messages = True
+intents.message_content = True
 client = commands.Bot(command_prefix=".", intents=intents)
 client.remove_command('help')
 
@@ -219,8 +220,8 @@ async def fight(player1: Player, player2: Player, ctx):
     # fight function. It just runs based on d20 rolls
     player1.set_busy(True)
     player2.set_busy(True)
-    fight_const_x = gen_fight_const(player1, ctx)
-    fight_const_y = gen_fight_const(player2, ctx)
+    fight_const_x = await gen_fight_const(player1, ctx)
+    fight_const_y = await gen_fight_const(player2, ctx)
     if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
@@ -290,8 +291,8 @@ async def feastFight(player1: Player, player2: Player, ctx):
     # fight function. It just runs based on d20 rolls
     # await ctx.send(player1)
 
-    fight_const_x = gen_fight_const(player1, ctx)
-    fight_const_y = gen_fight_const(player2, ctx)
+    fight_const_x = await gen_fight_const(player1, ctx)
+    fight_const_y = await gen_fight_const(player2, ctx)
     if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
@@ -391,8 +392,8 @@ async def randFight(player1: Player, player2: Player, ctx):
     # fight function. It just runs based on d20 rolls
     # await ctx.send(player1)
 
-    fight_const_x = gen_fight_const(player1)
-    fight_const_y = gen_fight_const(player2)
+    fight_const_x = await gen_fight_const(player1)
+    fight_const_y = await gen_fight_const(player2)
     if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
@@ -482,8 +483,8 @@ async def item_fight(player1: Player, player2: Player, item, ctx):
     # fight function. It just runs based on d20 rolls
     player1.set_busy(True)
     player2.set_busy(True)
-    fight_const_x = gen_fight_const(player1, ctx)
-    fight_const_y = gen_fight_const(player2, ctx)
+    fight_const_x = await gen_fight_const(player1, ctx)
+    fight_const_y = await gen_fight_const(player2, ctx)
     if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
@@ -533,7 +534,7 @@ async def item_fight(player1: Player, player2: Player, item, ctx):
         return player2
     if fight_const_x == fight_const_y:
 
-        if r.choice([True, False], ctx):
+        if r.choice([True, False]):
             player1.give_item(item)
             await ctx.send(
                 f"{player1.get_name()} fought {player2.get_name()} over {item} and won it. Both tributes emerged from the battle relatively unscathed. Both tributes then run away into the arena."
@@ -573,7 +574,7 @@ async def gen_fight_const(playe: Player, ctx):
 async def corn_fights(ctx):
     # runs corn functions while someone exists
     while at_corn:
-        if (len(at_corn) == 1):
+        if len(at_corn) == 1:
             x = at_corn[0]
             # last one standing is the winner
             await ctx.send(
@@ -589,7 +590,7 @@ async def corn_fights(ctx):
         at_corn.remove(p1)
         p2 = r.choice(at_corn)
         at_corn.remove(p2)
-        p_winner = fight(p1, p2, ctx)
+        p_winner = await fight(p1, p2, ctx)
         # XD you thought you were fighting? hell naw!
 
         if p_winner != None:
@@ -602,7 +603,7 @@ async def corn_fights(ctx):
 async def corn_fights2(ctx):
     # runs corn functions while someone exists
     while by_corn:
-        if (len(by_corn) == 1):
+        if len(by_corn) == 1:
             x = by_corn[0]
             by_corn.remove(x)
             is_running.append(x)
@@ -612,7 +613,7 @@ async def corn_fights2(ctx):
         by_corn.remove(p1)
         p2 = r.choice(by_corn)
         by_corn.remove(p2)
-        p_winner = item_fight(p1, p2, r.choice(cornucopia_items), ctx)
+        p_winner = await item_fight(p1, p2, r.choice(cornucopia_items), ctx)
         # XD you thought you were fighting? hell naw!
 
         if p_winner != None:
@@ -636,20 +637,20 @@ async def sponsorChance(player: Player, activityCoolness, ctx):
             f"{player.get_name()} was sent {r.choice(sponsor_items)} by a mysterious sponsor."
         )
     else:
-        await ctx.send("")
+        pass
 
 
 async def checkEqual(p1: Player, p2: Player, playerList, isp1, ctx):
     if len(playerList) >= 2 and isp1 == True:
         if p1 not in players:
             np1 = r.choice(playerList)
-            return checkEqual(np1, p2, playerList, True)
+            return await checkEqual(np1, p2, playerList, True, ctx)
         elif p1 in players:
             return p1
     elif len(playerList) > 2 and isp1 == False:
         if p1 == p2 or p2 not in players:
             np2 = r.choice(playerList)
-            return checkEqual(p1, np2, playerList, False)
+            return await checkEqual(p1, np2, playerList, False, ctx)
         elif p1 != p2 and p2 in players:
             return p2
     elif len(playerList) == 2 and isp1 == False:
@@ -682,7 +683,7 @@ async def cuts_tree(player: Player, ctx):
 async def hunts_enemy(p1: Player, p2: Player, ctx):
     # find which weapon triggered the call, and pass it as an argument in randFight Will have to edit prints in randFight.
 
-    # if r.choice([True, False], ctx):
+    # if r.choice([True, False]):
     await ctx.send(f"{p1.get_name()} hunts down {p2.get_name()}.")
     docket.remove(p2)
     winner = randFight(p1, p2, ctx)
@@ -916,10 +917,21 @@ async def randomEventManager(ctx):
     for i in players:
         docket.append(i)
 
-    for index, player in enumerate(docket):
+    for index, player in enumerate(players):
+
+        # await ctx.send(f"** **\nRunning {player.get_name()} now of")
+        # ps = []
+        # for i in docket:
+        #     ps.append(i.get_name())
+        # await ctx.send(f"{ps}\n ** **")
+
         # player = i
         pItems = player.get_items_enums()
-        docket.remove(player)
+        try:
+            docket.remove(player)
+        except ValueError:
+            pass
+
         # checks for healing items and uses them by async default.
         # COMMENTED OUT TEMPORARILY, CODE GIVING ERRORS
         # for i in pItems:
@@ -936,14 +948,20 @@ async def randomEventManager(ctx):
             player_options.append("cuts tree")
 
         # checks for weapons
-        if item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems or item_directory.KNIFE in pItems or item_directory.GRENADES in pItems or item_directory.BOW in pItems:
-            # HUNTS ENEMY, TEMPORARILY COMMENTED FOR TESTING
-            player_options.append("hunts enemy")
+        if (
+                item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems or item_directory.KNIFE in pItems or item_directory.GRENADES in pItems or item_directory.BOW in pItems):
             # HUNTS FOOD
+
             player_options.append("hunts food")
 
+        if (
+                item_directory.SWORD in pItems or item_directory.AXE in pItems or item_directory.KATANA in pItems or item_directory.KNIFE in pItems or item_directory.GRENADES in pItems or item_directory.BOW in pItems) and (
+                len(docket) >= 1):
+            # HUNTS ENEMY, TEMPORARILY COMMENTED FOR TESTING
+            player_options.append("hunts enemy")
+
         # checks for wisdom
-        if player.get_stat() == stats.WIS and player.get_crafted() == False:
+        if player.get_stat() == stats.WIS and player.get_crafted() is False:
             # craft item
             player_options.append("craft item")
 
@@ -951,11 +969,11 @@ async def randomEventManager(ctx):
             # DRINK CACTUS JUICE
             player_options.append("cactus juice")
 
-        if item_directory.AWP in pItems or item_directory.BOW in pItems:
+        if (item_directory.AWP in pItems or item_directory.BOW in pItems) and (len(docket) >= 1):
             # snoipe
             player_options.append("snipe")
 
-        if item_directory.GRENADES in pItems:
+        if (item_directory.GRENADES in pItems) and (len(docket) >= 1):
             # trap
             player_options.append("grenade trap")
 
@@ -972,8 +990,8 @@ async def randomEventManager(ctx):
             await cuts_tree(player, ctx)
         elif rActivity == "hunts enemy":
             p2 = 0
-            p1 = checkEqual(player, p2, players, True)
-            p2 = checkEqual(p1, r.choice(docket), players, False)
+            p1 = await checkEqual(player, p2, players, True, ctx)
+            p2 = await checkEqual(p1, r.choice(docket), players, False, ctx)
             await hunts_enemy(p1, p2, ctx)
         elif rActivity == "hunts food":
             await hunts_food(player, ctx)
@@ -983,14 +1001,14 @@ async def randomEventManager(ctx):
             await cactus_juice(player, ctx)
         elif rActivity == "snipe":
             p2 = 0
-            p1 = checkEqual(player, p2, players, True)
-            p2 = checkEqual(p1, r.choice(docket), players, False)
+            p1 = await checkEqual(player, p2, players, True, ctx)
+            p2 = await checkEqual(p1, r.choice(docket), players, False, ctx)
             await snipe(p1, p2, ctx)
 
         elif rActivity == "grenade trap":
             p2 = 0
-            p1 = checkEqual(player, p2, players, True)
-            p2 = checkEqual(p1, r.choice(docket), players, False)
+            p1 = await checkEqual(player, p2, players, True, ctx)
+            p2 = await checkEqual(p1, r.choice(docket), players, False, ctx)
             await grenade_trap(p1, p2, ctx)
         elif rActivity == "water":
             await water(player, ctx)
@@ -1038,7 +1056,6 @@ async def corn_feast(ctx):
     )
     for i in range(len(players)):
         await ctx.send(f"{players[i]}")
-    await ctx.send("")
 
     for index, player in enumerate(players):
 
@@ -1079,8 +1096,8 @@ async def corn_feast(ctx):
             is_goingToFeast.remove(member)
     while len(is_goingToFeast) >= 2:
         p2 = 0
-        p1 = checkEqual(r.choice(is_goingToFeast), p2, is_goingToFeast, True)
-        p2 = checkEqual(p1, r.choice(is_goingToFeast), is_goingToFeast, False)
+        p1 = await checkEqual(r.choice(is_goingToFeast), p2, is_goingToFeast, True, ctx)
+        p2 = await checkEqual(p1, r.choice(is_goingToFeast), is_goingToFeast, False, ctx)
 
         if p2 != p1:
             await feastFight(p1, p2, ctx)
@@ -1115,11 +1132,15 @@ async def gameManager(ctx):
     async def check2(m):
         return
 
-    for i in range(24):
-        await ctx.send(f"enter name {i + 1}")
-        name = await client.wait_for('message',
-                                     check=lambda m: m.channel == ctx.channel and m.author.id != 851698738871533580)
-        Names[i] = str(name.content)
+    # for i in range(24):
+    #     await ctx.send(f"enter name {i + 1}")
+    #     name = await client.wait_for('message',
+    #                                  check=lambda m: m.channel == ctx.channel and m.author.id != 851698738871533580)
+    #     Names[i] = str(name.content)
+
+    Names = ["Kai", "Adam", "Thal", "Isaac", "Skylar", "Mark Zuckerberg", "Bingus", "Rowan", "Genghis Khan",
+             "Chip Chipson", "Alex", "Joe Mama", "Joaquin", "Jesus", "Juan", "Dwayne \"The Rock\" Johnson", "Emma",
+             "Vlad", "Ellen Degeneres", "Hugo", "Scented Marker", "Katie", "Rose", "Mark Ruffalo"]
 
     await game_initialize(ctx)
 
@@ -1190,6 +1211,14 @@ async def gameManager(ctx):
 @client.command(aliases=["b"])
 async def begin(ctx):
     await gameManager(ctx)
+
+
+@client.command(aliases=["gpl"])
+async def getPlayerList(ctx):
+    pl = []
+    for i in players:
+        pl.append(i.get_name())
+    await ctx.send(pl)
 
 
 # token = "token"
