@@ -1192,10 +1192,10 @@ async def begin(ctx):
     await gameManager(ctx)
 
 
-token = "ODUxNjk4NzM4ODcxNTMzNTgw.Gyoh-4.Vz5ySBJa7ILL9mvtLNarGfD1Kb9_ir4_s2-azw"
-
-with open("token.p", "wb") as t:
-    pickle.dump(token, t)
+# token = "token"
+#
+# with open("token.p", "wb") as t:
+#     pickle.dump(token, t)
 
 with open("token.p", "rb") as t:
     token = pickle.load(t)
