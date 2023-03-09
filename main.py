@@ -109,6 +109,7 @@ class Player(object):
 
     def get_items_enums(self):
         y = []
+        print(self.item_list)
         for i in self.item_list:
             y.append(i.value())
         return y
@@ -392,8 +393,8 @@ async def randFight(player1: Player, player2: Player, ctx):
     # fight function. It just runs based on d20 rolls
     # await ctx.send(player1)
 
-    fight_const_x = await gen_fight_const(player1)
-    fight_const_y = await gen_fight_const(player2)
+    fight_const_x = await gen_fight_const(player1, ctx)
+    fight_const_y = await gen_fight_const(player2, ctx)
     if fight_const_x > fight_const_y:
         if player2.get_stat() == stats.CHA:
             player2.set_const(-0.7)
@@ -686,7 +687,7 @@ async def hunts_enemy(p1: Player, p2: Player, ctx):
     # if r.choice([True, False]):
     await ctx.send(f"{p1.get_name()} hunts down {p2.get_name()}.")
     docket.remove(p2)
-    winner = randFight(p1, p2, ctx)
+    winner = await randFight(p1, p2, ctx)
     if winner == p1:
         await sponsorChance(p1, 5, ctx)
     elif winner == p2:
@@ -1032,7 +1033,12 @@ async def cannons(ctx):
             dead.clear()
         else:
             await ctx.send(f"As night falls, the cannon remains silent.")
-        await ctx.send(f"{len(players)} tributes remain.")
+
+        if len(players) == 1:
+            await ctx.send(f"{len(players)} tribute remains.")
+        else:
+            await ctx.send(f"{len(players)} tributes remain.")
+
     else:
         if len(dead) > 1:
             await ctx.send(f"As night falls, the cannon fires {len(dead)} times.")
@@ -1046,7 +1052,11 @@ async def cannons(ctx):
             dead.clear()
         else:
             await ctx.send(f"As night falls, the cannon remains silent.")
-        await ctx.send(f"{len(players)} tributes remain.")
+
+        if len(players) == 1:
+            await ctx.send(f"{len(players)} tribute remains.")
+        else:
+            await ctx.send(f"{len(players)} tributes remain.")
 
 
 async def corn_feast(ctx):
@@ -1123,13 +1133,14 @@ async def win(ctx):
 
 async def gameManager(ctx):
     global Names
-    await ctx.send("enter 24 names.")
-    await ctx.send("the next 24 messages (from anyone) will be interpreted as names for tributes.")
 
-    async def check(m):
+    # await ctx.send("enter 24 names.")
+    # await ctx.send("the next 24 messages (from anyone) will be interpreted as names for tributes.")
+
+    def check(m):
         return m.content == 'n' or m.content == 'next'
 
-    async def check2(m):
+    def check2(m):
         return
 
     # for i in range(24):
@@ -1139,8 +1150,9 @@ async def gameManager(ctx):
     #     Names[i] = str(name.content)
 
     Names = ["Kai", "Adam", "Thal", "Isaac", "Skylar", "Mark Zuckerberg", "Bingus", "Rowan", "Genghis Khan",
-             "Chip Chipson", "Alex", "Joe Mama", "Joaquin", "Jesus", "Juan", "Dwayne \"The Rock\" Johnson", "Emma",
-             "Vlad", "Ellen Degeneres", "Hugo", "Scented Marker", "Katie", "Rose", "Mark Ruffalo"]
+             "Chip Chipson", "Bill Nye the Science Guy", "Barack Obama", "Eminem", "Jesus", "Joe Biden",
+             "Dwayne \"The Rock\" Johnson", "Emma", "Vladimir Putin", "Ellen Degeneres", "Hugo", "Scented Marker",
+             "Katie", "John Oliver", "Mark Ruffalo"]
 
     await game_initialize(ctx)
 
@@ -1156,10 +1168,11 @@ async def gameManager(ctx):
 
     await ctx.send("say 'next' or 'n' to continue")
 
-    nxt = client.wait_for('message', check=lambda m: (
-                                                             m.content == 'n' or m.content == 'next') and m.channel == ctx.channel and m.author.id != 851698738871533580)
-
     await ctx.send("-----------------------")
+
+    nxt = await client.wait_for('message',
+                                check=lambda m: (check(
+                                    m)) and m.channel == ctx.channel and m.author.id != 851698738871533580)
 
     while len(players) > 10:
         await randomEventManager(ctx)
@@ -1172,21 +1185,24 @@ async def gameManager(ctx):
 
         await ctx.send("say 'next' or 'n' to continue")
 
-        nxt = await client.wait_for('message', check=lambda m: (
-                                                                       m.content == 'n' or m.content == 'next') and m.channel == ctx.channel and m.author.id != 851698738871533580)
-
         await ctx.send("-----------------------")
+
+        nxt = await client.wait_for('message',
+                                    check=lambda m: (check(
+                                        m)) and m.channel == ctx.channel and m.author.id != 851698738871533580)
 
     await corn_feast(ctx)
 
+    await ctx.send("-----------------------")
+
     await ctx.send("say 'next' or 'n' to continue")
 
-    nxt = await client.wait_for('message', check=lambda m: (
-                                                                   m.content == 'n' or m.content == 'next') and m.channel == ctx.channel and m.author.id != 851698738871533580)
+    await ctx.send("-----------------------")
 
+    nxt = await client.wait_for('message',
+                                check=lambda m: (check(
+                                    m)) and m.channel == ctx.channel and m.author.id != 851698738871533580)
     while len(players) > 1:
-        await ctx.send("-----------------------")
-
         await randomEventManager(ctx)
 
         await ctx.send("-----------------------")
@@ -1197,8 +1213,11 @@ async def gameManager(ctx):
 
         await ctx.send("say 'next' or 'n' to continue")
 
-        nxt = await client.wait_for('message', check=lambda m: (
-                                                                       m.content == 'n' or m.content == 'next') and m.channel == ctx.channel and m.author.id != 851698738871533580)
+        await ctx.send("-----------------------")
+
+        nxt = await client.wait_for('message',
+                                    check=lambda m: (check(
+                                        m)) and m.channel == ctx.channel and m.author.id != 851698738871533580)
 
     if len(players) == 1:
         await ctx.send("<><><><><><><><><><><><>")
