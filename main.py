@@ -26,8 +26,13 @@ Note- for next update try to al,;..................,,,,,,,,,dd in weapons during
 
 @client.event
 async def on_ready():
-    await client.change_presence(activity=discord.Game(name='being one buggy mfer'))
+    await client.change_presence(activity=discord.Game(name='with your mental health'))
     print("Ready")
+    try:
+        synced = await client.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+        print(e)
 
 
 class stats(enum.Enum):
@@ -764,7 +769,8 @@ async def craft_item(player: Player, ctx):
 
 async def cactus_juice(player: Player, ctx):
     await ctx.send(
-        f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench ya! nothing's quenchier! It's the quenchiest!'"
+        f"{player.get_name()} finds a cactus and drinks the juice. They then say 'Drink cactus juice! it'll quench "
+        f"ya! nothing's quenchier! It's the quenchiest!'"
     )
     player.set_const(-.1)
     if player.get_const() <= 0:
@@ -834,7 +840,7 @@ async def snipe(p1: Player, p2: Player, ctx):
 async def grenade_trap(p1: Player, p2: Player, ctx):
     num = r.randint(1, 20)
     await ctx.send(f"{p1.get_name()} sets a trap with their grenade belt.")
-    if num > 17:
+    if num > 16:
         await ctx.send(
             f"{p2.get_name()} walked directly into {p1.get_name()}'s trap.")
         docket.remove(p2)
@@ -853,13 +859,13 @@ async def grenade_trap(p1: Player, p2: Player, ctx):
         p1.set_list(lst)
         """
         await sponsorChance(p1, 4, ctx)
-    if num > 1 and num <= 17:
+    elif 1 < num <= 16:
         await ctx.send(
             f"Nothing happens and {p1.get_name()} packs up their grenade belt and leaves."
         )
     else:
         await ctx.send(f"{p1.get_name()} accidentally triggers their own trap.")
-        await died(p1, "their own trap", ctx)
+        await died(p1, "blowing up", ctx)
 
 
 async def water(player: Player, ctx):
@@ -1134,25 +1140,32 @@ async def win(ctx):
 async def gameManager(ctx):
     global Names
 
-    # await ctx.send("enter 24 names.")
-    # await ctx.send("the next 24 messages (from anyone) will be interpreted as names for tributes.")
-
     def check(m):
         return m.content == 'n' or m.content == 'next'
 
     def check2(m):
-        return
+        return True
 
-    # for i in range(24):
-    #     await ctx.send(f"enter name {i + 1}")
-    #     name = await client.wait_for('message',
-    #                                  check=lambda m: m.channel == ctx.channel and m.author.id != 851698738871533580)
-    #     Names[i] = str(name.content)
+    await ctx.send("Do you want to manually enter names or use the default name list? (m for manual, d for default)")
 
-    Names = ["Kai", "Adam", "Thal", "Isaac", "Skylar", "Mark Zuckerberg", "Bingus", "Rowan", "Genghis Khan",
-             "Chip Chipson", "Bill Nye the Science Guy", "Barack Obama", "Eminem", "Jesus", "Joe Biden",
-             "Dwayne \"The Rock\" Johnson", "Emma", "Vladimir Putin", "Ellen Degeneres", "Hugo", "Scented Marker",
-             "Katie", "John Oliver", "Mark Ruffalo"]
+    ans = await client.wait_for('message',
+                                check=lambda m: (check2(
+                                    m)) and m.channel == ctx.channel and m.author.id != 851698738871533580)
+
+    if ans == "m" or ans == "manual" or ans == "Manual" or ans == "M":
+        await ctx.send("enter 24 names.")
+        await ctx.send("the next 24 messages (from anyone) will be interpreted as names for tributes.")
+
+        for i in range(24):
+            await ctx.send(f"enter name {i + 1}")
+            name = await client.wait_for('message',
+                                         check=lambda m: m.channel == ctx.channel and m.author.id != 851698738871533580)
+            Names[i] = str(name.content)
+    else:
+        Names = ["Kai", "Adam", "Thal", "Isaac", "Skylar", "Mark Zuckerberg", "Bingus", "Rowan", "Genghis Khan",
+                 "Chip Chipson", "Bill Nye the Science Guy", "Barack Obama", "Eminem", "Jesus", "Joe Biden",
+                 "Dwayne \"The Rock\" Johnson", "Emma", "Vladimir Putin", "Ellen Degeneres", "Hugo", "Kiana",
+                 "Katie", "John Oliver", "Mark Ruffalo"]
 
     await game_initialize(ctx)
 
@@ -1230,6 +1243,11 @@ async def gameManager(ctx):
 @client.command(aliases=["b"])
 async def begin(ctx):
     await gameManager(ctx)
+
+
+@client.tree.command(name="slash")
+async def slash(interaction: discord.Interaction):
+    await interaction.response.send_message("slash commands can die in a hole")
 
 
 @client.command(aliases=["gpl"])
